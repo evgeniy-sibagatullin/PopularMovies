@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+
+    <string name="request_url_init">URL will show up here</string>
+    <string name="result_init">Result will show up here</string>
+    <string name="result_promise">Some JSON will appear here soon</string>
+
+    <string name="menu_query_type_popular">Popular</string>
+    <string name="menu_query_type_top_rated">Top rated</string>
+
+    <!-- TODO Use your own api key here -->
+    <string name="themoviedb_api_key" translatable="false">Do Androids Dream of Electric Sheep</string>
+</resources>
