@@ -1,28 +1,33 @@
 package com.seriously.android.popularmovies;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.seriously.android.popularmovies.loader.MovieLoader;
+import com.seriously.android.popularmovies.model.Movie;
 import com.seriously.android.popularmovies.utilities.NetworkUtils;
 
-import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class MovieSelectionActivity extends AppCompatActivity {
+public class MovieSelectionActivity extends AppCompatActivity implements
+        LoaderManager.LoaderCallbacks<List<Movie>> {
 
     private View mNoConnection;
     private TextView mRequestUrl;
     private TextView mResultData;
 
+    private static final int LOADER_ID = 0;
+    final static String QUERY_URL = "query_url";
     final static String QUERY_TYPE_POPULAR = "popular";
     final static String QUERY_TYPE_TOP_RATED = "top_rated";
 
@@ -57,14 +62,16 @@ public class MovieSelectionActivity extends AppCompatActivity {
     }
 
     private void handleQueryTypeSelection(String queryType) {
-        URL queryUlr = NetworkUtils.buildUrl(queryType, getString(R.string.themoviedb_api_key));
-        mRequestUrl.setText(queryUlr.toString());
+        URL queryUrl = NetworkUtils.buildUrl(queryType, getString(R.string.themoviedb_api_key));
+        mRequestUrl.setText(queryUrl.toString());
 
         boolean isConnected = NetworkUtils.isConnected(this);
         setupNoConnectionView(isConnected);
 
         if (isConnected) {
-            new QueryTask().execute(queryUlr);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(QUERY_URL, queryUrl);
+            getSupportLoaderManager().restartLoader(LOADER_ID, bundle, this);
         }
     }
 
@@ -78,28 +85,23 @@ public class MovieSelectionActivity extends AppCompatActivity {
         mNoConnection.setVisibility(isConnected ? GONE : VISIBLE);
     }
 
-    private class QueryTask extends AsyncTask<URL, Void, String> {
+    @Override
+    public Loader<List<Movie>> onCreateLoader(int id, Bundle args) {
+        return new MovieLoader(this, (URL) args.getSerializable(QUERY_URL));
+    }
 
-        @Override
-        @Nullable
-        protected String doInBackground(URL... params) {
-            URL searchUrl = params[0];
-            String response = null;
+    @Override
+    public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> movies) {
+        StringBuilder sb = new StringBuilder();
 
-            try {
-                response = NetworkUtils.getResponseFromHttpUrl(searchUrl);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return response;
+        for (Movie movie : movies) {
+            sb.append(movie.toString()).append("\n\n");
         }
 
-        @Override
-        protected void onPostExecute(String response) {
-            if (response != null && !response.trim().isEmpty()) {
-                mResultData.setText(response);
-            }
-        }
+        mResultData.setText(sb.toString());
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<Movie>> loader) {
     }
 }
