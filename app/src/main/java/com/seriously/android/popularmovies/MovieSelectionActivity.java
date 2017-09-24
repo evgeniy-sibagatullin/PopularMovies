@@ -1,6 +1,8 @@
 package com.seriously.android.popularmovies;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -8,6 +10,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.seriously.android.popularmovies.utilities.NetworkUtils;
+
+import java.io.IOException;
+import java.net.URL;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -52,21 +57,49 @@ public class MovieSelectionActivity extends AppCompatActivity {
     }
 
     private void handleQueryTypeSelection(String queryType) {
-        handleConnection();
-        mRequestUrl.setText(NetworkUtils.buildUrl(
-                queryType, getString(R.string.themoviedb_api_key)).toString());
-        mResultData.setText(R.string.result_promise);
+        URL queryUlr = NetworkUtils.buildUrl(queryType, getString(R.string.themoviedb_api_key));
+        mRequestUrl.setText(queryUlr.toString());
+
+        boolean isConnected = NetworkUtils.isConnected(this);
+        setupNoConnectionView(isConnected);
+
+        if (isConnected) {
+            new QueryTask().execute(queryUlr);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        handleConnection();
+        setupNoConnectionView(NetworkUtils.isConnected(this));
     }
 
-    private boolean handleConnection() {
-        boolean isConnected = NetworkUtils.isConnected(this);
+    private void setupNoConnectionView(boolean isConnected) {
         mNoConnection.setVisibility(isConnected ? GONE : VISIBLE);
-        return isConnected;
+    }
+
+    private class QueryTask extends AsyncTask<URL, Void, String> {
+
+        @Override
+        @Nullable
+        protected String doInBackground(URL... params) {
+            URL searchUrl = params[0];
+            String response = null;
+
+            try {
+                response = NetworkUtils.getResponseFromHttpUrl(searchUrl);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String response) {
+            if (response != null && !response.trim().isEmpty()) {
+                mResultData.setText(response);
+            }
+        }
     }
 }
