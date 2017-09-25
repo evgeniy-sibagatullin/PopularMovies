@@ -39,6 +39,8 @@ public class MovieSelectionActivity extends AppCompatActivity implements
         mNoConnection = findViewById(R.id.no_connection);
         mRequestUrl = (TextView) findViewById(R.id.request_url);
         mResultData = (TextView) findViewById(R.id.result_data);
+
+        handleQueryTypeSelection(QUERY_TYPE_POPULAR);
     }
 
     @Override
