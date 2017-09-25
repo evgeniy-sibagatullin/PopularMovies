@@ -4,11 +4,14 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.seriously.android.popularmovies.adapter.MovieGridAdapter;
 import com.seriously.android.popularmovies.loader.MovieLoader;
 import com.seriously.android.popularmovies.model.Movie;
 import com.seriously.android.popularmovies.utilities.NetworkUtils;
@@ -24,9 +27,10 @@ public class MovieSelectionActivity extends AppCompatActivity implements
 
     private View mNoConnection;
     private TextView mRequestUrl;
-    private TextView mResultData;
+    private RecyclerView mMovieGrid;
 
     private static final int LOADER_ID = 0;
+    final static int GRID_COLUMNS = 2;
     final static String QUERY_URL = "query_url";
     final static String QUERY_TYPE_POPULAR = "popular";
     final static String QUERY_TYPE_TOP_RATED = "top_rated";
@@ -38,7 +42,10 @@ public class MovieSelectionActivity extends AppCompatActivity implements
 
         mNoConnection = findViewById(R.id.no_connection);
         mRequestUrl = (TextView) findViewById(R.id.request_url);
-        mResultData = (TextView) findViewById(R.id.result_data);
+
+        mMovieGrid = (RecyclerView) findViewById(R.id.movie_grid);
+        mMovieGrid.setLayoutManager(new GridLayoutManager(this, GRID_COLUMNS));
+        mMovieGrid.setHasFixedSize(true);
 
         handleQueryTypeSelection(QUERY_TYPE_POPULAR);
     }
@@ -94,13 +101,7 @@ public class MovieSelectionActivity extends AppCompatActivity implements
 
     @Override
     public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> movies) {
-        StringBuilder sb = new StringBuilder();
-
-        for (Movie movie : movies) {
-            sb.append(movie.toString()).append("\n\n");
-        }
-
-        mResultData.setText(sb.toString());
+        mMovieGrid.setAdapter(new MovieGridAdapter(movies));
     }
 
     @Override

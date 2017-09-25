@@ -27,19 +27,9 @@
         android:layout_margin="@dimen/margin_default"
         android:src="@drawable/ic_signal_wifi_off_black_24dp"/>
 
-    <ScrollView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/movie_grid"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="vertical">
-
-        <TextView
-            android:id="@+id/result_data"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_default"
-            android:text="@string/result_init"
-            android:textSize="@dimen/font_size_default"/>
-
-    </ScrollView>
+        android:layout_height="match_parent"/>
 
 </LinearLayout>
