@@ -9,9 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Toast;
 
-import com.seriously.android.popularmovies.adapter.MovieGridAdapter;
+import com.seriously.android.popularmovies.adapter.MovieAdapter;
 import com.seriously.android.popularmovies.loader.MovieLoader;
 import com.seriously.android.popularmovies.model.Movie;
 import com.seriously.android.popularmovies.utilities.NetworkUtils;
@@ -23,11 +23,11 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 public class MovieSelectionActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<List<Movie>> {
+        LoaderManager.LoaderCallbacks<List<Movie>>, MovieAdapter.MovieClickListener {
 
     private View mNoConnection;
-    private TextView mRequestUrl;
-    private RecyclerView mMovieGrid;
+    private RecyclerView mRecyclerView;
+    private Toast mToast;
 
     private static final int LOADER_ID = 0;
     final static int GRID_COLUMNS = 2;
@@ -41,11 +41,10 @@ public class MovieSelectionActivity extends AppCompatActivity implements
         setContentView(R.layout.movie_selection);
 
         mNoConnection = findViewById(R.id.no_connection);
-        mRequestUrl = (TextView) findViewById(R.id.request_url);
 
-        mMovieGrid = (RecyclerView) findViewById(R.id.movie_grid);
-        mMovieGrid.setLayoutManager(new GridLayoutManager(this, GRID_COLUMNS));
-        mMovieGrid.setHasFixedSize(true);
+        mRecyclerView = (RecyclerView) findViewById(R.id.movie_grid);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, GRID_COLUMNS));
+        mRecyclerView.setHasFixedSize(true);
 
         handleQueryTypeSelection(QUERY_TYPE_POPULAR);
     }
@@ -72,8 +71,6 @@ public class MovieSelectionActivity extends AppCompatActivity implements
 
     private void handleQueryTypeSelection(String queryType) {
         URL queryUrl = NetworkUtils.buildUrl(queryType, getString(R.string.themoviedb_api_key));
-        mRequestUrl.setText(queryUrl.toString());
-
         boolean isConnected = NetworkUtils.isConnected(this);
         setupNoConnectionView(isConnected);
 
@@ -101,10 +98,20 @@ public class MovieSelectionActivity extends AppCompatActivity implements
 
     @Override
     public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> movies) {
-        mMovieGrid.setAdapter(new MovieGridAdapter(this, movies));
+        mRecyclerView.setAdapter(new MovieAdapter(this, movies));
     }
 
     @Override
     public void onLoaderReset(Loader<List<Movie>> loader) {
+    }
+
+    @Override
+    public void onMovieClick(Movie movie) {
+        if (mToast != null) {
+            mToast.cancel();
+        }
+
+        mToast = Toast.makeText(this, movie.getTitle(), Toast.LENGTH_LONG);
+        mToast.show();
     }
 }

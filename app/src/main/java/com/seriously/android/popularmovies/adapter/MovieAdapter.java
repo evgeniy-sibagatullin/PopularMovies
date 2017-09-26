@@ -14,12 +14,17 @@ import com.seriously.android.popularmovies.utilities.ImageLoader;
 
 import java.util.List;
 
-public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.MovieViewHolder> {
+public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
+
+    public interface MovieClickListener {
+        void onMovieClick(Movie movie);
+    }
 
     private final Context mContext;
-    private List<Movie> mMovies;
+    private final MovieClickListener mListener;
+    private final List<Movie> mMovies;
 
-    class MovieViewHolder extends RecyclerView.ViewHolder {
+    class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView title;
         private ImageView poster;
@@ -28,16 +33,24 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.Movi
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.title);
             poster = (ImageView) itemView.findViewById(R.id.poster);
+            itemView.setOnClickListener(this);
         }
 
         void bind(Movie movie) {
             title.setText(movie.getTitle());
             ImageLoader.loadGridPosterImage(mContext, poster, movie.getPosterPath());
         }
+
+        @Override
+        public void onClick(View view) {
+            int clickedPosition = getAdapterPosition();
+            mListener.onMovieClick(mMovies.get(clickedPosition));
+        }
     }
 
-    public MovieGridAdapter(Context context, List<Movie> movies) {
+    public MovieAdapter(Context context, List<Movie> movies) {
         mContext = context;
+        mListener = (MovieClickListener) context;
         mMovies = movies;
     }
 
