@@ -1,44 +1,49 @@
 package com.seriously.android.popularmovies.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.seriously.android.popularmovies.R;
 import com.seriously.android.popularmovies.model.Movie;
+import com.seriously.android.popularmovies.utilities.ImageLoader;
 
 import java.util.List;
 
 public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.MovieViewHolder> {
 
-    private static List<Movie> mMovies;
+    private final Context mContext;
+    private List<Movie> mMovies;
 
     class MovieViewHolder extends RecyclerView.ViewHolder {
 
         private TextView title;
-        private TextView releaseDate;
+        private ImageView poster;
 
         MovieViewHolder(View itemView) {
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.title);
-            releaseDate = (TextView) itemView.findViewById(R.id.release_date);
+            poster = (ImageView) itemView.findViewById(R.id.poster);
         }
 
         void bind(Movie movie) {
             title.setText(movie.getTitle());
-            releaseDate.setText(movie.getReleaseDate());
+            ImageLoader.loadGridPosterImage(mContext, poster, movie.getPosterPath());
         }
     }
 
-    public MovieGridAdapter(List<Movie> movies) {
+    public MovieGridAdapter(Context context, List<Movie> movies) {
+        mContext = context;
         mMovies = movies;
     }
 
     @Override
     public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_grid_item, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.movie_grid_item, parent, false);
         return new MovieViewHolder(view);
     }
 

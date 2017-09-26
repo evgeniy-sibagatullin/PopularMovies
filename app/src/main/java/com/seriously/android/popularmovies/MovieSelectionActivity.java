@@ -101,7 +101,7 @@ public class MovieSelectionActivity extends AppCompatActivity implements
 
     @Override
     public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> movies) {
-        mMovieGrid.setAdapter(new MovieGridAdapter(movies));
+        mMovieGrid.setAdapter(new MovieGridAdapter(this, movies));
     }
 
     @Override
