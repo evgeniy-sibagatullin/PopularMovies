@@ -1,5 +1,6 @@
-package com.seriously.android.popularmovies;
+package com.seriously.android.popularmovies.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -9,8 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
+import com.seriously.android.popularmovies.R;
 import com.seriously.android.popularmovies.adapter.MovieAdapter;
 import com.seriously.android.popularmovies.loader.MovieLoader;
 import com.seriously.android.popularmovies.model.Movie;
@@ -25,15 +26,16 @@ import static android.view.View.VISIBLE;
 public class MovieSelectionActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<List<Movie>>, MovieAdapter.MovieClickListener {
 
-    private View mNoConnection;
-    private RecyclerView mRecyclerView;
-    private Toast mToast;
+    public static final String EXTRA_MOVIE = "intent.extra.MOVIE";
 
     private static final int LOADER_ID = 0;
-    final static int GRID_COLUMNS = 2;
-    final static String QUERY_URL = "query_url";
-    final static String QUERY_TYPE_POPULAR = "popular";
-    final static String QUERY_TYPE_TOP_RATED = "top_rated";
+    private static final int GRID_COLUMNS = 2;
+    private static final String QUERY_URL = "query_url";
+    private static final String QUERY_TYPE_POPULAR = "popular";
+    private static final String QUERY_TYPE_TOP_RATED = "top_rated";
+
+    private View mNoConnection;
+    private RecyclerView mRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,11 +109,8 @@ public class MovieSelectionActivity extends AppCompatActivity implements
 
     @Override
     public void onMovieClick(Movie movie) {
-        if (mToast != null) {
-            mToast.cancel();
-        }
-
-        mToast = Toast.makeText(this, movie.getTitle(), Toast.LENGTH_LONG);
-        mToast.show();
+        Intent startMovieDetailsActivityIntent = new Intent(this, MovieDetailsActivity.class);
+        startMovieDetailsActivityIntent.putExtra(EXTRA_MOVIE, movie);
+        startActivity(startMovieDetailsActivityIntent);
     }
 }
