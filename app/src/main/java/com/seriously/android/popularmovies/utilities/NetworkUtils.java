@@ -30,8 +30,8 @@ public class NetworkUtils {
 
     private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
 
-    private final static String API_BASE_URL = "https://api.themoviedb.org/3/movie/";
-    private final static String API_KEY = "api_key";
+    private static final String API_BASE_URL = "https://api.themoviedb.org/3/movie/";
+    private static final String API_KEY = "api_key";
 
     private static final String JSON_RESULTS = "results";
     private static final String JSON_TITLE = "title";
@@ -115,7 +115,7 @@ public class NetworkUtils {
 
         return movies;
     }
-    
+
     private static Movie extractMovieFromJsonOvbject(JSONObject movie) throws JSONException {
         String title = movie.getString(JSON_TITLE);
         String releaseDate = movie.getString(JSON_RELEASE_DATE);
