@@ -120,7 +120,7 @@ public class NetworkUtils {
         String title = movie.getString(JSON_TITLE);
         String releaseDate = movie.getString(JSON_RELEASE_DATE);
         String posterPath = movie.getString(JSON_POSTER_PATH);
-        int voteAverage = movie.getInt(JSON_VOTE_AVERAGE);
+        String voteAverage = movie.getString(JSON_VOTE_AVERAGE);
         String overview = movie.getString(JSON_OVERVIEW);
         return new Movie(title, releaseDate, posterPath, voteAverage, overview);
     }
