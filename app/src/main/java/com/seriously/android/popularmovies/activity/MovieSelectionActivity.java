@@ -79,7 +79,13 @@ public class MovieSelectionActivity extends AppCompatActivity implements
         if (isConnected) {
             Bundle bundle = new Bundle();
             bundle.putSerializable(QUERY_URL, queryUrl);
-            getSupportLoaderManager().restartLoader(LOADER_ID, bundle, this);
+
+            Loader<List<Movie>> loader = getSupportLoaderManager().getLoader(LOADER_ID);
+            if (loader == null) {
+                getSupportLoaderManager().initLoader(LOADER_ID, bundle, this);
+            } else {
+                getSupportLoaderManager().restartLoader(LOADER_ID, bundle, this);
+            }
         }
     }
 

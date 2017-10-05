@@ -15,7 +15,7 @@ public class MovieLoader extends AsyncTaskLoader<List<Movie>> {
 
     private final Context mContext;
     private final URL mUrl;
-    private final static Map<URL, List<Movie>> cache = new HashMap<>();
+    private final Map<URL, List<Movie>> cache = new HashMap<>();
 
     public MovieLoader(Context context, URL url) {
         super(context);
