@@ -33,7 +33,9 @@ public class MovieSelectionActivity extends AppCompatActivity implements
     private static final String QUERY_URL = "query_url";
     private static final String QUERY_TYPE_POPULAR = "popular";
     private static final String QUERY_TYPE_TOP_RATED = "top_rated";
+    public static final String STATE_QUERY_TYPE = "state_query_type";
 
+    private String mQueryType;
     private View mNoConnection;
     private RecyclerView mRecyclerView;
 
@@ -48,7 +50,17 @@ public class MovieSelectionActivity extends AppCompatActivity implements
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, GRID_COLUMNS));
         mRecyclerView.setHasFixedSize(true);
 
-        handleQueryTypeSelection(QUERY_TYPE_POPULAR);
+        mQueryType = savedInstanceState != null ?
+                savedInstanceState.getString(STATE_QUERY_TYPE) :
+                QUERY_TYPE_POPULAR;
+
+        handleQueryTypeSelection(mQueryType);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(STATE_QUERY_TYPE, mQueryType);
     }
 
     @Override
@@ -80,11 +92,11 @@ public class MovieSelectionActivity extends AppCompatActivity implements
             Bundle bundle = new Bundle();
             bundle.putSerializable(QUERY_URL, queryUrl);
 
-            Loader<List<Movie>> loader = getSupportLoaderManager().getLoader(LOADER_ID);
-            if (loader == null) {
+            if (queryType.equals(mQueryType)) {
                 getSupportLoaderManager().initLoader(LOADER_ID, bundle, this);
             } else {
                 getSupportLoaderManager().restartLoader(LOADER_ID, bundle, this);
+                mQueryType = queryType;
             }
         }
     }

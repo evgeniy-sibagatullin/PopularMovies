@@ -7,15 +7,13 @@ import com.seriously.android.popularmovies.model.Movie;
 import com.seriously.android.popularmovies.utilities.NetworkUtils;
 
 import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MovieLoader extends AsyncTaskLoader<List<Movie>> {
 
     private final Context mContext;
     private final URL mUrl;
-    private final Map<URL, List<Movie>> cache = new HashMap<>();
+    private List<Movie> cache;
 
     public MovieLoader(Context context, URL url) {
         super(context);
@@ -25,8 +23,8 @@ public class MovieLoader extends AsyncTaskLoader<List<Movie>> {
 
     @Override
     protected void onStartLoading() {
-        if (cache.containsKey(mUrl)) {
-            deliverResult(cache.get(mUrl));
+        if (cache != null) {
+            deliverResult(cache);
         } else {
             forceLoad();
         }
@@ -39,7 +37,7 @@ public class MovieLoader extends AsyncTaskLoader<List<Movie>> {
 
     @Override
     public void deliverResult(List<Movie> movies) {
-        cache.put(mUrl, movies);
+        cache = movies;
         super.deliverResult(movies);
     }
 }
