@@ -34,6 +34,7 @@ public class NetworkUtils {
     private static final String API_KEY = "api_key";
 
     private static final String JSON_RESULTS = "results";
+    private static final String JSON_ID = "id";
     private static final String JSON_TITLE = "title";
     private static final String JSON_RELEASE_DATE = "release_date";
     private static final String JSON_POSTER_PATH = "poster_path";
@@ -117,11 +118,12 @@ public class NetworkUtils {
     }
 
     private static Movie extractMovieFromJsonOvbject(JSONObject movie) throws JSONException {
+        String id = movie.getString(JSON_ID);
         String title = movie.getString(JSON_TITLE);
         String releaseDate = movie.getString(JSON_RELEASE_DATE);
         String posterPath = movie.getString(JSON_POSTER_PATH);
         String voteAverage = movie.getString(JSON_VOTE_AVERAGE);
         String overview = movie.getString(JSON_OVERVIEW);
-        return new Movie(title, releaseDate, posterPath, voteAverage, overview);
+        return new Movie(id, title, releaseDate, posterPath, voteAverage, overview);
     }
 }

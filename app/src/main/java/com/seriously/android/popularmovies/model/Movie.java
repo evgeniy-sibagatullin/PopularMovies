@@ -4,18 +4,24 @@ import java.io.Serializable;
 
 public class Movie implements Serializable {
 
+    private final String id;
     private final String title;
     private final String releaseDate;
     private final String posterPath;
     private final String voteAverage;
     private final String overview;
 
-    public Movie(String title, String releaseDate, String posterPath, String voteAverage, String overview) {
+    public Movie(String id, String title, String releaseDate, String posterPath, String voteAverage, String overview) {
+        this.id = id;
         this.title = title;
         this.releaseDate = releaseDate;
         this.posterPath = posterPath;
         this.voteAverage = voteAverage;
         this.overview = overview;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getTitle() {
@@ -45,6 +51,7 @@ public class Movie implements Serializable {
 
         Movie movie = (Movie) o;
 
+        if (id != null ? !id.equals(movie.id) : movie.id!= null) return false;
         if (title != null ? !title.equals(movie.title) : movie.title != null) return false;
         if (releaseDate != null ? !releaseDate.equals(movie.releaseDate) : movie.releaseDate != null)
             return false;
@@ -60,7 +67,8 @@ public class Movie implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = title != null ? title.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (title != null ? title.hashCode() : 0);
         result = 31 * result + (releaseDate != null ? releaseDate.hashCode() : 0);
         result = 31 * result + (posterPath != null ? posterPath.hashCode() : 0);
         result = 31 * result + (voteAverage != null ? voteAverage.hashCode() : 0);
@@ -71,7 +79,8 @@ public class Movie implements Serializable {
     @Override
     public String toString() {
         return "Movie{" +
-                "title='" + getTitle() + '\'' +
+                "id='" + getId() + '\'' +
+                ", title='" + getTitle() + '\'' +
                 ", releaseDate='" + getReleaseDate() + '\'' +
                 ", posterPath='" + getPosterPath() + '\'' +
                 ", voteAverage=" + getVoteAverage() +
