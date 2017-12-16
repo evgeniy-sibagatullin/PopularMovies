@@ -21,6 +21,10 @@
         </activity>
         <activity android:name=".activity.MovieDetailsActivity">
         </activity>
+        <provider
+            android:name=".data.FavoritesProvider"
+            android:authorities="com.seriously.android.popularmovies"
+            android:exported="false" />
     </application>
 
 </manifest>
