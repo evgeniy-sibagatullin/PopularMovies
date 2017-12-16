@@ -11,4 +11,9 @@
         android:id="@+id/item_query_type_top_rated"
         android:title="@string/menu_query_type_top_rated"
         app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/item_query_type_favorites"
+        android:title="@string/menu_query_type_favorites"
+        app:showAsAction="ifRoom"/>
 </menu>
