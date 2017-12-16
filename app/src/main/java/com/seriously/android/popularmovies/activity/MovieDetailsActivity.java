@@ -3,6 +3,7 @@ package com.seriously.android.popularmovies.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,6 +20,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private TextView mVoteAverage;
     private ImageView mPoster;
     private TextView mOverview;
+    private ImageView mFavoriteOff;
+    private ImageView mFavoriteOn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +30,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         defineViews();
         handleIntent();
+        addListenersToFavoriteViews();
     }
+
 
     private void defineViews() {
         mTitle = (TextView) findViewById(R.id.title);
@@ -35,6 +40,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
         mVoteAverage = (TextView) findViewById(R.id.vote_average);
         mPoster = (ImageView) findViewById(R.id.poster);
         mOverview = (TextView) findViewById(R.id.overview);
+        mFavoriteOff = (ImageView) findViewById(R.id.favorite_off);
+        mFavoriteOn = (ImageView) findViewById(R.id.favorite_on);
     }
 
     private void handleIntent() {
@@ -53,5 +60,23 @@ public class MovieDetailsActivity extends AppCompatActivity {
         mVoteAverage.setText(movie.getVoteAverage());
         ImageLoader.loadFullPosterImage(this, mPoster, movie.getPosterPath());
         mOverview.setText(movie.getOverview());
+    }
+
+    private void addListenersToFavoriteViews() {
+        mFavoriteOff.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mFavoriteOff.setVisibility(View.GONE);
+                mFavoriteOn.setVisibility(View.VISIBLE);
+            }
+        });
+
+        mFavoriteOn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mFavoriteOn.setVisibility(View.GONE);
+                mFavoriteOff.setVisibility(View.VISIBLE);
+            }
+        });
     }
 }
