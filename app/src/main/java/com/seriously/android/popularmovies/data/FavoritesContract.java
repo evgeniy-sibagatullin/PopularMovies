@@ -22,6 +22,8 @@ public class FavoritesContract {
         public static final String COLUMN_FAVORITE_ID = "id";
         public static final String COLUMN_FAVORITE_TITLE = "title";
         public static final String COLUMN_FAVORITE_POSTER_PATH = "poster_path";
+        final static String[] PROJECTION = new String[]{_ID, COLUMN_FAVORITE_ID,
+                COLUMN_FAVORITE_TITLE, COLUMN_FAVORITE_POSTER_PATH};
 
         public static Movie getMovieFromCursor(Cursor cursor) {
             int idColumnIndex = cursor.getColumnIndex(COLUMN_FAVORITE_ID);

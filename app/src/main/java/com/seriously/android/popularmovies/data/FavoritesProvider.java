@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import static com.seriously.android.popularmovies.data.FavoritesContract.FavoriteEntry.PROJECTION;
 import static com.seriously.android.popularmovies.data.FavoritesContract.FavoriteEntry.TABLE_NAME;
 
 public class FavoritesProvider extends ContentProvider {
@@ -38,7 +39,19 @@ public class FavoritesProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] strings, @Nullable String s, @Nullable String[] strings1, @Nullable String s1) {
-        return null;
+        switch (sUriMatcher.match(uri)) {
+            case FAVORITES:
+                return queryFavorites(uri);
+            default:
+                throw new IllegalArgumentException("Query is not supported for " + uri);
+        }
+    }
+
+    private Cursor queryFavorites(Uri uri) {
+        Cursor cursor = mDbHelper.getReadableDatabase().query(TABLE_NAME, PROJECTION,
+                null, null, null, null, null, null);
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return cursor;
     }
 
     @Nullable

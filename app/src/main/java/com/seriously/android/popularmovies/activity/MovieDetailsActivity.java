@@ -64,7 +64,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         mTitle.setText(mMovie.getTitle());
         mReleaseDate.setText(mMovie.getReleaseDate());
         mVoteAverage.setText(mMovie.getVoteAverage());
-        ImageLoader.loadFullPosterImage(this, mPoster, mMovie.getPosterPath());
+        ImageLoader.loadGridPosterImage(this, mPoster, mMovie.getPosterPath());
         mOverview.setText(mMovie.getOverview());
     }
 

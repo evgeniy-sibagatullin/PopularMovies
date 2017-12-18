@@ -13,7 +13,8 @@ import android.view.View;
 
 import com.seriously.android.popularmovies.R;
 import com.seriously.android.popularmovies.adapter.MovieAdapter;
-import com.seriously.android.popularmovies.loader.MovieLoader;
+import com.seriously.android.popularmovies.loader.MovieDbLoader;
+import com.seriously.android.popularmovies.loader.MovieNetLoader;
 import com.seriously.android.popularmovies.model.Movie;
 import com.seriously.android.popularmovies.utilities.NetworkUtils;
 
@@ -33,6 +34,7 @@ public class MovieSelectionActivity extends AppCompatActivity implements
     private static final String QUERY_URL = "query_url";
     private static final String QUERY_TYPE_POPULAR = "popular";
     private static final String QUERY_TYPE_TOP_RATED = "top_rated";
+    private static final String QUERY_TYPE_FAVORITES = "favorites";
     public static final String STATE_QUERY_TYPE = "state_query_type";
 
     private String mQueryType;
@@ -54,7 +56,7 @@ public class MovieSelectionActivity extends AppCompatActivity implements
                 savedInstanceState.getString(STATE_QUERY_TYPE) :
                 QUERY_TYPE_POPULAR;
 
-        handleQueryTypeSelection(mQueryType);
+        handleQueryTypeSelection();
     }
 
     @Override
@@ -73,30 +75,35 @@ public class MovieSelectionActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item_query_type_popular:
-                handleQueryTypeSelection(QUERY_TYPE_POPULAR);
-                return true;
+                return handleCustomOptionsItemSelection(QUERY_TYPE_POPULAR);
             case R.id.item_query_type_top_rated:
-                handleQueryTypeSelection(QUERY_TYPE_TOP_RATED);
-                return true;
+                return handleCustomOptionsItemSelection(QUERY_TYPE_TOP_RATED);
+            case R.id.item_query_type_favorites:
+                return handleCustomOptionsItemSelection(QUERY_TYPE_FAVORITES);
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void handleQueryTypeSelection(String queryType) {
-        URL queryUrl = NetworkUtils.buildUrl(queryType, getString(R.string.themoviedb_api_key));
-        boolean isConnected = NetworkUtils.isConnected(this);
-        setupNoConnectionView(isConnected);
+    private boolean handleCustomOptionsItemSelection(String queryType) {
+        mQueryType = queryType;
+        handleQueryTypeSelection();
+        return true;
+    }
 
-        if (isConnected) {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable(QUERY_URL, queryUrl);
+    private void handleQueryTypeSelection() {
+        if (isFavoritesViewType()) {
+            mNoConnection.setVisibility(GONE);
+            getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
+        } else {
+            boolean isConnected = NetworkUtils.isConnected(this);
+            setupNoConnectionView(isConnected);
 
-            if (queryType.equals(mQueryType)) {
-                getSupportLoaderManager().initLoader(LOADER_ID, bundle, this);
-            } else {
+            if (isConnected) {
+                Bundle bundle = new Bundle();
+                URL queryUrl = NetworkUtils.buildUrl(mQueryType, getString(R.string.themoviedb_api_key));
+                bundle.putSerializable(QUERY_URL, queryUrl);
                 getSupportLoaderManager().restartLoader(LOADER_ID, bundle, this);
-                mQueryType = queryType;
             }
         }
     }
@@ -104,7 +111,10 @@ public class MovieSelectionActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        setupNoConnectionView(NetworkUtils.isConnected(this));
+
+        if (!isFavoritesViewType()) {
+            setupNoConnectionView(NetworkUtils.isConnected(this));
+        }
     }
 
     private void setupNoConnectionView(boolean isConnected) {
@@ -113,7 +123,11 @@ public class MovieSelectionActivity extends AppCompatActivity implements
 
     @Override
     public Loader<List<Movie>> onCreateLoader(int id, Bundle args) {
-        return new MovieLoader(this, (URL) args.getSerializable(QUERY_URL));
+        if (isFavoritesViewType()) {
+            return new MovieDbLoader(this);
+        } else {
+            return new MovieNetLoader(this, (URL) args.getSerializable(QUERY_URL));
+        }
     }
 
     @Override
@@ -130,5 +144,9 @@ public class MovieSelectionActivity extends AppCompatActivity implements
         Intent startMovieDetailsActivityIntent = new Intent(this, MovieDetailsActivity.class);
         startMovieDetailsActivityIntent.putExtra(EXTRA_MOVIE, movie);
         startActivity(startMovieDetailsActivityIntent);
+    }
+
+    private boolean isFavoritesViewType() {
+        return QUERY_TYPE_FAVORITES.equals(mQueryType);
     }
 }
