@@ -48,15 +48,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         }
     }
 
-    public MovieAdapter(Context context, List<Movie> movies) {
+    public MovieAdapter(Context context, MovieClickListener listener, List<Movie> movies) {
         mContext = context;
-        mListener = (MovieClickListener) context;
+        mListener = listener;
         mMovies = movies;
     }
 
     @Override
     public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.movie_grid_item, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.movie_selection_grid_item, parent, false);
         return new MovieViewHolder(view);
     }
 

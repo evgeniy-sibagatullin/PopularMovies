@@ -3,6 +3,7 @@
 
     <string name="menu_query_type_popular">Popular</string>
     <string name="menu_query_type_top_rated">Top rated</string>
+    <string name="menu_query_type_favorites">Favorites</string>
 
     <string name="problem_http">Problem making the HTTP request</string>
     <string name="problem_json">Problem parsing the movies JSON</string>

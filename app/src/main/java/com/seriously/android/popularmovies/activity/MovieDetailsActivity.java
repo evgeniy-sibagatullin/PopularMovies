@@ -15,7 +15,7 @@ import com.seriously.android.popularmovies.data.FavoritesContract.FavoriteEntry;
 import com.seriously.android.popularmovies.model.Movie;
 import com.seriously.android.popularmovies.utilities.ImageLoader;
 
-import static com.seriously.android.popularmovies.activity.MovieSelectionActivity.EXTRA_MOVIE;
+import static com.seriously.android.popularmovies.fragment.MoviesFragment.EXTRA_MOVIE;
 
 public class MovieDetailsActivity extends AppCompatActivity {
 
@@ -32,7 +32,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.movie_details);
+        setContentView(R.layout.movie_details_activity);
 
         defineViews();
         handleIntent();
