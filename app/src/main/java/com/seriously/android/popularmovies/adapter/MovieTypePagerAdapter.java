@@ -41,11 +41,11 @@ public class MovieTypePagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 1:
-                return mContext.getString(R.string.menu_query_type_popular);
+                return mContext.getString(R.string.movie_type_popular);
             case 2:
-                return mContext.getString(R.string.menu_query_type_top_rated);
+                return mContext.getString(R.string.movie_type_top_rated);
             default:
-                return mContext.getString(R.string.menu_query_type_favorites);
+                return mContext.getString(R.string.movie_type_favorites);
         }
     }
 }
