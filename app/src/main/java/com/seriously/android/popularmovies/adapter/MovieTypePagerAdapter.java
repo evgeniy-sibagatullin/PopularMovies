@@ -23,12 +23,12 @@ public class MovieTypePagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position) {
+            case 0:
+                return new FavoriteMoviesFragment();
             case 1:
                 return new PopularMoviesFragment();
-            case 2:
-                return new TopRatedMoviesFragment();
             default:
-                return new FavoriteMoviesFragment();
+                return new TopRatedMoviesFragment();
         }
     }
 

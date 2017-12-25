@@ -2,7 +2,6 @@ package com.seriously.android.popularmovies.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -31,30 +30,12 @@ public abstract class MoviesFragment extends Fragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.movie_selection_fragment, container, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        mNoConnection = getActivity().findViewById(R.id.no_connection);
-
-        mRecyclerView = (RecyclerView) getActivity().findViewById(R.id.movie_grid);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), GRID_COLUMNS));
-        mRecyclerView.setHasFixedSize(true);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
+        View rootView = inflater.inflate(R.layout.movie_selection_fragment, container, false);
+        findAndPrepareViews(rootView);
         handleConnection();
         restartLoader();
+        return rootView;
     }
-
-    protected abstract void handleConnection();
-
-    protected abstract void restartLoader();
 
     @Override
     public void onMovieClick(Movie movie) {
@@ -70,5 +51,19 @@ public abstract class MoviesFragment extends Fragment implements
 
     @Override
     public void onLoaderReset(Loader<List<Movie>> loader) {
+    }
+
+    protected abstract void handleConnection();
+
+    protected abstract void restartLoader();
+
+    protected abstract int getLoaderId();
+
+    private void findAndPrepareViews(View rootView) {
+        mNoConnection = rootView.findViewById(R.id.no_connection);
+
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.movie_grid);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), GRID_COLUMNS));
+        mRecyclerView.setHasFixedSize(true);
     }
 }
