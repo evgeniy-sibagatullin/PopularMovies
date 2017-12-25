@@ -32,8 +32,7 @@ public abstract class MoviesFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.movie_selection_fragment, container, false);
         findAndPrepareViews(rootView);
-        handleConnection();
-        restartLoader();
+        updateView();
         return rootView;
     }
 
@@ -61,9 +60,20 @@ public abstract class MoviesFragment extends Fragment implements
 
     private void findAndPrepareViews(View rootView) {
         mNoConnection = rootView.findViewById(R.id.no_connection);
+        mNoConnection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                updateView();
+            }
+        });
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.movie_grid);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), GRID_COLUMNS));
         mRecyclerView.setHasFixedSize(true);
+    }
+
+    private void updateView() {
+        handleConnection();
+        restartLoader();
     }
 }
