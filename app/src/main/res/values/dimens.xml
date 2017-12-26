@@ -7,4 +7,6 @@
 
     <dimen name="padding_small">4dp</dimen>
     <dimen name="padding_default">8dp</dimen>
+
+    <dimen name="progress_image_size">64dp</dimen>
 </resources>

@@ -26,6 +26,8 @@ public abstract class MoviesFragment extends Fragment implements
     private static final int GRID_COLUMNS = 2;
 
     protected View mNoConnection;
+    protected View mProgressImageContainer;
+    protected View mProgressImage;
     protected RecyclerView mRecyclerView;
 
     @Override
@@ -66,6 +68,9 @@ public abstract class MoviesFragment extends Fragment implements
                 updateView();
             }
         });
+
+        mProgressImageContainer = rootView.findViewById(R.id.progress_image_container);
+        mProgressImage = rootView.findViewById(R.id.progress_image);
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.movie_grid);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), GRID_COLUMNS));

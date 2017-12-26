@@ -12,6 +12,22 @@
         android:layout_margin="@dimen/margin_default"
         android:src="@drawable/ic_signal_wifi_off_black_24dp"/>
 
+    <FrameLayout
+        android:id="@+id/progress_image_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/progress_image"
+            android:layout_width="@dimen/progress_image_size"
+            android:layout_height="@dimen/progress_image_size"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/margin_default"
+            android:src="@drawable/progress_image"/>
+
+    </FrameLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/movie_grid"
         android:layout_width="match_parent"
