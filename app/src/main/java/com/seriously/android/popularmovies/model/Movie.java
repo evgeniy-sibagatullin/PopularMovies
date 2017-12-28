@@ -1,5 +1,7 @@
 package com.seriously.android.popularmovies.model;
 
+import com.seriously.android.popularmovies.loader.MovieDbLoader;
+
 import java.io.Serializable;
 
 public class Movie implements Serializable {
@@ -18,6 +20,10 @@ public class Movie implements Serializable {
         this.posterPath = posterPath;
         this.voteAverage = voteAverage;
         this.overview = overview;
+    }
+
+    public boolean isFavorite() {
+        return MovieDbLoader.isMovieFavoriteById(id);
     }
 
     public String getId() {

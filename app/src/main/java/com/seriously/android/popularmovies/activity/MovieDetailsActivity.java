@@ -73,7 +73,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     private void initializeFavoriteViews() {
         addListenersToFavoriteViews();
-        hideToggledFavoriveView();
+        setViewVisibility(mMovie.isFavorite() ? mFavoriteOff : mFavoriteOn, GONE);
     }
 
     private void addListenersToFavoriteViews() {
@@ -94,11 +94,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
         });
     }
 
-    private void hideToggledFavoriveView() {
-        setViewVisibility(MovieDbLoader.getFavoriteMovieIdsCache().contains(mMovie.getId()) ?
-                mFavoriteOff : mFavoriteOn, GONE);
-    }
-
     private void setViewVisibility(View view, int visibility) {
         view.setVisibility(visibility);
     }
@@ -107,12 +102,13 @@ public class MovieDetailsActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
 
-        if (mFavoriteOn.getVisibility() == VISIBLE) {
+        if (mFavoriteOn.getVisibility() == VISIBLE && !mMovie.isFavorite()) {
             ContentValues valuesToInsert = prepareFavoriteValues();
             Uri uri = getContentResolver().insert(FavoriteEntry.CONTENT_URI, valuesToInsert);
 
             if (uri != null) {
                 Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
+                MovieDbLoader.addFavoriteMovieIdToCache(mMovie.getId());
             }
         }
     }

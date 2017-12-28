@@ -24,8 +24,12 @@ public class MovieDbLoader extends MovieLoader {
         return movies;
     }
 
-    public static Set<String> getFavoriteMovieIdsCache() {
-        return favoriteMovieIdsCache;
+    public static boolean isMovieFavoriteById(String id) {
+        return favoriteMovieIdsCache.contains(id);
+    }
+
+    public static void addFavoriteMovieIdToCache(String id) {
+        favoriteMovieIdsCache.add(id);
     }
 
     private void initializeFavoriteMovieIdsCache(List<Movie> movies) {
