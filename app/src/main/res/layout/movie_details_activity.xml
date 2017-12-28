@@ -52,8 +52,7 @@
                 android:id="@+id/favorite_on"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_favorite_black_24dp"
-                android:visibility="gone"/>
+                android:src="@drawable/ic_favorite_black_24dp"/>
 
         </LinearLayout>
 

@@ -12,9 +12,12 @@ import android.widget.Toast;
 
 import com.seriously.android.popularmovies.R;
 import com.seriously.android.popularmovies.data.FavoritesContract.FavoriteEntry;
+import com.seriously.android.popularmovies.loader.MovieDbLoader;
 import com.seriously.android.popularmovies.model.Movie;
 import com.seriously.android.popularmovies.utilities.ImageLoader;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static com.seriously.android.popularmovies.fragment.MoviesFragment.EXTRA_MOVIE;
 
 public class MovieDetailsActivity extends AppCompatActivity {
@@ -36,7 +39,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         defineViews();
         handleIntent();
-        addListenersToFavoriteViews();
+        initializeFavoriteViews();
     }
 
     private void defineViews() {
@@ -68,29 +71,43 @@ public class MovieDetailsActivity extends AppCompatActivity {
         mOverview.setText(mMovie.getOverview());
     }
 
+    private void initializeFavoriteViews() {
+        addListenersToFavoriteViews();
+        hideToggledFavoriveView();
+    }
+
     private void addListenersToFavoriteViews() {
         mFavoriteOff.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mFavoriteOff.setVisibility(View.GONE);
-                mFavoriteOn.setVisibility(View.VISIBLE);
+                setViewVisibility(mFavoriteOff, GONE);
+                setViewVisibility(mFavoriteOn, VISIBLE);
             }
         });
 
         mFavoriteOn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mFavoriteOn.setVisibility(View.GONE);
-                mFavoriteOff.setVisibility(View.VISIBLE);
+                setViewVisibility(mFavoriteOff, VISIBLE);
+                setViewVisibility(mFavoriteOn, GONE);
             }
         });
+    }
+
+    private void hideToggledFavoriveView() {
+        setViewVisibility(MovieDbLoader.getFavoriteMovieIdsCache().contains(mMovie.getId()) ?
+                mFavoriteOff : mFavoriteOn, GONE);
+    }
+
+    private void setViewVisibility(View view, int visibility) {
+        view.setVisibility(visibility);
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
 
-        if (mFavoriteOn.getVisibility() == View.VISIBLE) {
+        if (mFavoriteOn.getVisibility() == VISIBLE) {
             ContentValues valuesToInsert = prepareFavoriteValues();
             Uri uri = getContentResolver().insert(FavoriteEntry.CONTENT_URI, valuesToInsert);
 
