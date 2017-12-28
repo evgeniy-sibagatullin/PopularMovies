@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.seriously.android.popularmovies.R;
 import com.seriously.android.popularmovies.data.FavoritesContract.FavoriteEntry;
@@ -18,7 +17,9 @@ import com.seriously.android.popularmovies.utilities.ImageLoader;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.seriously.android.popularmovies.data.FavoritesContract.FavoriteEntry.COLUMN_FAVORITE_ID;
 import static com.seriously.android.popularmovies.fragment.MoviesFragment.EXTRA_MOVIE;
+import static com.seriously.android.popularmovies.loader.MovieDbLoader.removeFavoriteMovieIdFromCache;
 
 public class MovieDetailsActivity extends AppCompatActivity {
 
@@ -101,21 +102,36 @@ public class MovieDetailsActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        String movieId = mMovie.getId();
 
         if (mFavoriteOn.getVisibility() == VISIBLE && !mMovie.isFavorite()) {
-            ContentValues valuesToInsert = prepareFavoriteValues();
-            Uri uri = getContentResolver().insert(FavoriteEntry.CONTENT_URI, valuesToInsert);
+            handleSetMovieFavorite(movieId);
+        } else if (mFavoriteOff.getVisibility() == VISIBLE && mMovie.isFavorite()) {
+            handleSetMovieNotFavorite(movieId);
+        }
+    }
 
-            if (uri != null) {
-                Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
-                MovieDbLoader.addFavoriteMovieIdToCache(mMovie.getId());
-            }
+    private void handleSetMovieFavorite(String movieId) {
+        ContentValues valuesToInsert = prepareFavoriteValues();
+        Uri uri = getContentResolver().insert(FavoriteEntry.CONTENT_URI, valuesToInsert);
+
+        if (uri != null) {
+            MovieDbLoader.addFavoriteMovieIdToCache(movieId);
+        }
+    }
+
+    private void handleSetMovieNotFavorite(String movieId) {
+        String whereClause = COLUMN_FAVORITE_ID + "=?";
+        String[] whereArgs = new String[]{movieId};
+
+        if (getContentResolver().delete(FavoriteEntry.CONTENT_URI, whereClause, whereArgs) > 0) {
+            removeFavoriteMovieIdFromCache(movieId);
         }
     }
 
     private ContentValues prepareFavoriteValues() {
         ContentValues values = new ContentValues();
-        values.put(FavoriteEntry.COLUMN_FAVORITE_ID, mMovie.getId());
+        values.put(COLUMN_FAVORITE_ID, mMovie.getId());
         values.put(FavoriteEntry.COLUMN_FAVORITE_TITLE, mMovie.getTitle());
         values.put(FavoriteEntry.COLUMN_FAVORITE_POSTER_PATH, mMovie.getPosterPath());
         return values;

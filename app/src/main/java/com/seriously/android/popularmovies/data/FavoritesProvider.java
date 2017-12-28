@@ -5,6 +5,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -84,8 +85,23 @@ public class FavoritesProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
-        return 0;
+    public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
+        int rowsDeleted;
+
+        switch (sUriMatcher.match(uri)) {
+            case FAVORITES:
+                rowsDeleted = database.delete(TABLE_NAME, selection, selectionArgs);
+                break;
+            default:
+                throw new IllegalArgumentException("Deletion is not supported for " + uri);
+        }
+
+        if (rowsDeleted != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return rowsDeleted;
     }
 
     @Override

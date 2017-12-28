@@ -32,6 +32,10 @@ public class MovieDbLoader extends MovieLoader {
         favoriteMovieIdsCache.add(id);
     }
 
+    public static void removeFavoriteMovieIdFromCache(String id) {
+        favoriteMovieIdsCache.remove(id);
+    }
+
     private void initializeFavoriteMovieIdsCache(List<Movie> movies) {
         favoriteMovieIdsCache.clear();
         for (Movie movie : movies) {
