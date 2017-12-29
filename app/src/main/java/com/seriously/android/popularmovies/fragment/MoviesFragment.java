@@ -39,7 +39,7 @@ public abstract class MoviesFragment extends Fragment implements
     }
 
     @Override
-    public void onMovieClick(Movie movie) {
+    public void openDetails(Movie movie) {
         Intent startMovieDetailsActivityIntent = new Intent(getActivity(), MovieDetailsActivity.class);
         startMovieDetailsActivityIntent.putExtra(EXTRA_MOVIE, movie);
         startActivity(startMovieDetailsActivityIntent);
@@ -77,7 +77,7 @@ public abstract class MoviesFragment extends Fragment implements
         mRecyclerView.setHasFixedSize(true);
     }
 
-    private void updateView() {
+    protected void updateView() {
         handleConnection();
         restartLoader();
     }

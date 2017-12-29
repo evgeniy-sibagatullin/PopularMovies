@@ -17,7 +17,7 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
     public interface MovieClickListener {
-        void onMovieClick(Movie movie);
+        void openDetails(Movie movie);
     }
 
     private final Context mContext;
@@ -44,7 +44,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         @Override
         public void onClick(View view) {
             int clickedPosition = getAdapterPosition();
-            mListener.onMovieClick(mMovies.get(clickedPosition));
+            mListener.openDetails(mMovies.get(clickedPosition));
         }
     }
 

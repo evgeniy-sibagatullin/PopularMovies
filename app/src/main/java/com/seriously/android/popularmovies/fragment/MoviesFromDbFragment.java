@@ -12,6 +12,12 @@ import java.util.List;
 public abstract class MoviesFromDbFragment extends MoviesFragment {
 
     @Override
+    public void onResume() {
+        super.onResume();
+        updateView();
+    }
+
+    @Override
     public Loader<List<Movie>> onCreateLoader(int id, Bundle args) {
         return new MovieDbLoader(getContext());
     }
