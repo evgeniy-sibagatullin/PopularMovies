@@ -14,7 +14,7 @@ public abstract class MoviesFromDbFragment extends MoviesFragment {
     @Override
     public void onResume() {
         super.onResume();
-        updateView();
+        restartLoader();
     }
 
     @Override
