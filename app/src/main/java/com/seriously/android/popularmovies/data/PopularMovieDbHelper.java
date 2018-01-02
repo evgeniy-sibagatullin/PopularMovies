@@ -21,7 +21,10 @@ class PopularMovieDbHelper extends SQLiteOpenHelper {
                 + FavoriteEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + FavoriteEntry.COLUMN_FAVORITE_ID + " TEXT NOT NULL, "
                 + FavoriteEntry.COLUMN_FAVORITE_TITLE + " TEXT NOT NULL, "
-                + FavoriteEntry.COLUMN_FAVORITE_POSTER_PATH + " TEXT NOT NULL);";
+                + FavoriteEntry.COLUMN_FAVORITE_RELEASE_DATE + " TEXT NOT NULL, "
+                + FavoriteEntry.COLUMN_FAVORITE_POSTER_PATH + " TEXT NOT NULL, "
+                + FavoriteEntry.COLUMN_FAVORITE_VOTE_AVERAGE + " TEXT NOT NULL, "
+                + FavoriteEntry.COLUMN_FAVORITE_OVERVIEW + " TEXT NOT NULL);";
 
         sqLiteDatabase.execSQL(SQL_CREATE_PRODUCTS_TABLE);
     }

@@ -1,10 +1,7 @@
 package com.seriously.android.popularmovies.data;
 
-import android.database.Cursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
-
-import com.seriously.android.popularmovies.model.Movie;
 
 public class FavoritesContract {
 
@@ -21,20 +18,13 @@ public class FavoritesContract {
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_FAVORITES);
         public static final String COLUMN_FAVORITE_ID = "id";
         public static final String COLUMN_FAVORITE_TITLE = "title";
+        public static final String COLUMN_FAVORITE_RELEASE_DATE = "release_date";
         public static final String COLUMN_FAVORITE_POSTER_PATH = "poster_path";
-        final static String[] PROJECTION = new String[]{_ID, COLUMN_FAVORITE_ID,
-                COLUMN_FAVORITE_TITLE, COLUMN_FAVORITE_POSTER_PATH};
-
-        public static Movie getMovieFromCursor(Cursor cursor) {
-            int idColumnIndex = cursor.getColumnIndex(COLUMN_FAVORITE_ID);
-            int titleColumnIndex = cursor.getColumnIndex(COLUMN_FAVORITE_TITLE);
-            int posterPathColumnIndex = cursor.getColumnIndex(COLUMN_FAVORITE_POSTER_PATH);
-
-            String id = cursor.getString(idColumnIndex);
-            String title = cursor.getString(titleColumnIndex);
-            String posterPath = cursor.getString(posterPathColumnIndex);
-
-            return new Movie(id, title, null, posterPath, null, null);
-        }
+        public static final String COLUMN_FAVORITE_VOTE_AVERAGE = "vote_average";
+        public static final String COLUMN_FAVORITE_OVERVIEW = "overview";
+        final static String[] PROJECTION = new String[]
+                {_ID, COLUMN_FAVORITE_ID, COLUMN_FAVORITE_TITLE,
+                        COLUMN_FAVORITE_RELEASE_DATE, COLUMN_FAVORITE_POSTER_PATH,
+                        COLUMN_FAVORITE_VOTE_AVERAGE, COLUMN_FAVORITE_OVERVIEW};
     }
 }

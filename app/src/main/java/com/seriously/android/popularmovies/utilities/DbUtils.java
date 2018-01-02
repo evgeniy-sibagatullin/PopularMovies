@@ -24,7 +24,7 @@ public class DbUtils {
     private static List<Movie> convertCursorToMovieList(Cursor cursor) {
         List<Movie> movies = new ArrayList<>();
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            movies.add(FavoriteEntry.getMovieFromCursor(cursor));
+            movies.add(Movie.getInstance(cursor));
         }
 
         return movies;

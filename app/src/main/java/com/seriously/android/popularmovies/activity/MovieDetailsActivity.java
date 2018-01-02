@@ -133,7 +133,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
         ContentValues values = new ContentValues();
         values.put(COLUMN_FAVORITE_ID, mMovie.getId());
         values.put(FavoriteEntry.COLUMN_FAVORITE_TITLE, mMovie.getTitle());
+        values.put(FavoriteEntry.COLUMN_FAVORITE_RELEASE_DATE, mMovie.getReleaseDate());
         values.put(FavoriteEntry.COLUMN_FAVORITE_POSTER_PATH, mMovie.getPosterPath());
+        values.put(FavoriteEntry.COLUMN_FAVORITE_VOTE_AVERAGE, mMovie.getVoteAverage());
+        values.put(FavoriteEntry.COLUMN_FAVORITE_OVERVIEW, mMovie.getOverview());
         return values;
     }
 }

@@ -34,12 +34,6 @@ public class NetworkUtils {
     private static final String API_KEY = "api_key";
 
     private static final String JSON_RESULTS = "results";
-    private static final String JSON_ID = "id";
-    private static final String JSON_TITLE = "title";
-    private static final String JSON_RELEASE_DATE = "release_date";
-    private static final String JSON_POSTER_PATH = "poster_path";
-    private static final String JSON_VOTE_AVERAGE = "vote_average";
-    private static final String JSON_OVERVIEW = "overview";
 
     public static boolean isConnected(Context context) {
         NetworkInfo activeNetworkInfo = getActiveNetworkInfo(context);
@@ -107,7 +101,7 @@ public class NetworkUtils {
                 JSONArray moviesArray = new JSONObject(moviesJson).getJSONArray(JSON_RESULTS);
 
                 for (int index = 0; index < moviesArray.length(); index++) {
-                    movies.add(extractMovieFromJsonOvbject(moviesArray.getJSONObject(index)));
+                    movies.add(Movie.getInstance(moviesArray.getJSONObject(index)));
                 }
             } catch (JSONException e) {
                 Log.e(LOG_TAG, context.getString(R.string.problem_json), e);
@@ -115,15 +109,5 @@ public class NetworkUtils {
         }
 
         return movies;
-    }
-
-    private static Movie extractMovieFromJsonOvbject(JSONObject movie) throws JSONException {
-        String id = movie.getString(JSON_ID);
-        String title = movie.getString(JSON_TITLE);
-        String releaseDate = movie.getString(JSON_RELEASE_DATE);
-        String posterPath = movie.getString(JSON_POSTER_PATH);
-        String voteAverage = movie.getString(JSON_VOTE_AVERAGE);
-        String overview = movie.getString(JSON_OVERVIEW);
-        return new Movie(id, title, releaseDate, posterPath, voteAverage, overview);
     }
 }
