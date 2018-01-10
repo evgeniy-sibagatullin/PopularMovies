@@ -5,10 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.seriously.android.popularmovies.R;
+import com.seriously.android.popularmovies.databinding.MovieSelectionGridItemBinding;
 import com.seriously.android.popularmovies.model.Movie;
 import com.seriously.android.popularmovies.utilities.ImageLoader;
 
@@ -26,19 +24,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private TextView title;
-        private ImageView poster;
+        private MovieSelectionGridItemBinding mBinding;
 
-        MovieViewHolder(View itemView) {
-            super(itemView);
-            title = (TextView) itemView.findViewById(R.id.title);
-            poster = (ImageView) itemView.findViewById(R.id.poster);
-            itemView.setOnClickListener(this);
+        MovieViewHolder(MovieSelectionGridItemBinding binding) {
+            super(binding.getRoot());
+            mBinding = binding;
         }
 
         void bind(Movie movie) {
-            title.setText(movie.getTitle());
-            ImageLoader.loadGridPosterImage(mContext, poster, movie.getPosterPath());
+            mBinding.title.setText(movie.getTitle());
+            ImageLoader.loadGridPosterImage(mContext, mBinding.poster, movie.getPosterPath());
+            mBinding.getRoot().setOnClickListener(this);
         }
 
         @Override
@@ -56,8 +52,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     @Override
     public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.movie_selection_grid_item, parent, false);
-        return new MovieViewHolder(view);
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        MovieSelectionGridItemBinding binding = MovieSelectionGridItemBinding
+                .inflate(inflater, parent, false);
+        return new MovieViewHolder(binding);
     }
 
     @Override

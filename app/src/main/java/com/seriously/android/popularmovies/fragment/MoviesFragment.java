@@ -1,6 +1,7 @@
 package com.seriously.android.popularmovies.fragment;
 
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -14,12 +15,15 @@ import android.view.ViewGroup;
 import com.seriously.android.popularmovies.R;
 import com.seriously.android.popularmovies.activity.MovieDetailsActivity;
 import com.seriously.android.popularmovies.adapter.MovieAdapter;
+import com.seriously.android.popularmovies.databinding.MovieSelectionFragmentBinding;
 import com.seriously.android.popularmovies.model.Movie;
 
 import java.util.List;
 
 public abstract class MoviesFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<List<Movie>>, MovieAdapter.MovieClickListener {
+
+    private MovieSelectionFragmentBinding mBinding;
 
     public static final String EXTRA_MOVIE = "intent.extra.MOVIE";
     protected static final String QUERY_URL = "query_url";
@@ -32,8 +36,9 @@ public abstract class MoviesFragment extends Fragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.movie_selection_fragment, container, false);
-        findAndPrepareViews(rootView);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.movie_selection_fragment, container, false);
+        View rootView = mBinding.getRoot();
+        prepareViews();
         updateView();
         return rootView;
     }
@@ -60,8 +65,8 @@ public abstract class MoviesFragment extends Fragment implements
 
     protected abstract int getLoaderId();
 
-    private void findAndPrepareViews(View rootView) {
-        mNoConnection = rootView.findViewById(R.id.no_connection);
+    private void prepareViews() {
+        mNoConnection = mBinding.noConnection;
         mNoConnection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,10 +74,10 @@ public abstract class MoviesFragment extends Fragment implements
             }
         });
 
-        mProgressImageContainer = rootView.findViewById(R.id.progress_image_container);
-        mProgressImage = rootView.findViewById(R.id.progress_image);
+        mProgressImageContainer = mBinding.progressImageContainer;
+        mProgressImage = mBinding.progressImage;
 
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.movie_grid);
+        mRecyclerView = mBinding.movieGrid;
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), GRID_COLUMNS));
         mRecyclerView.setHasFixedSize(true);
     }
