@@ -4,76 +4,102 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <android.support.constraint.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/poster"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/poster_details_height"
-            android:layout_margin="@dimen/margin_default"
-            android:padding="@dimen/padding_default"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_default"
-            android:gravity="left"
-            android:textSize="@dimen/font_size_title"
-            android:textStyle="bold"
-            app:layout_constraintLeft_toRightOf="@+id/poster"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <TextView
-            android:id="@+id/release_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_default"
-            app:layout_constraintLeft_toRightOf="@+id/poster"
-            app:layout_constraintTop_toBottomOf="@+id/title"/>
-
-        <TextView
-            android:id="@+id/vote_average"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_default"
-            app:layout_constraintLeft_toRightOf="@+id/poster"
-            app:layout_constraintTop_toBottomOf="@+id/release_date"/>
-
-        <ImageView
-            android:id="@+id/favorite_off"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_default"
-            android:src="@drawable/ic_favorite_border_black_24dp"
-            app:layout_constraintLeft_toRightOf="@+id/poster"
-            app:layout_constraintTop_toBottomOf="@+id/vote_average"/>
-
-        <ImageView
-            android:id="@+id/favorite_on"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_default"
-            android:src="@drawable/ic_favorite_black_24dp"
-            app:layout_constraintLeft_toRightOf="@+id/poster"
-            app:layout_constraintTop_toBottomOf="@+id/vote_average"/>
-
-        <TextView
-            android:id="@+id/overview"
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/padding_big"
-            android:paddingRight="@dimen/padding_big"
-            android:paddingTop="@dimen/padding_small"
-            app:layout_constraintLeft_toLeftOf="@+id/poster"
-            app:layout_constraintTop_toBottomOf="@+id/poster"/>
+            android:orientation="vertical">
 
-    </android.support.constraint.ConstraintLayout>
+            <ImageView
+                android:id="@+id/poster"
+                android:layout_width="wrap_content"
+                android:layout_height="150dp"
+                android:layout_margin="@dimen/margin_default"
+                android:padding="@dimen/padding_default"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_default"
+                android:gravity="left"
+                android:textSize="@dimen/font_size_title"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toRightOf="@+id/poster"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/release_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_default"
+                app:layout_constraintLeft_toRightOf="@+id/poster"
+                app:layout_constraintTop_toBottomOf="@+id/title"/>
+
+            <TextView
+                android:id="@+id/vote_average"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_default"
+                app:layout_constraintLeft_toRightOf="@+id/poster"
+                app:layout_constraintTop_toBottomOf="@+id/release_date"/>
+
+            <ImageView
+                android:id="@+id/favorite_off"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_default"
+                android:src="@drawable/ic_favorite_border_black_24dp"
+                app:layout_constraintLeft_toRightOf="@+id/poster"
+                app:layout_constraintTop_toBottomOf="@+id/vote_average"/>
+
+            <ImageView
+                android:id="@+id/favorite_on"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_default"
+                android:src="@drawable/ic_favorite_black_24dp"
+                app:layout_constraintLeft_toRightOf="@+id/poster"
+                app:layout_constraintTop_toBottomOf="@+id/vote_average"/>
+
+            <TextView
+                android:id="@+id/overview"
+                android:layout_width="368dp"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/padding_big"
+                android:paddingRight="@dimen/padding_big"
+                android:paddingTop="@dimen/padding_small"
+                app:layout_constraintLeft_toLeftOf="@+id/poster"
+                app:layout_constraintTop_toBottomOf="@+id/poster"/>
+
+            <View
+                android:id="@+id/separator"
+                android:layout_width="368dp"
+                android:layout_height="1dp"
+                android:layout_margin="@dimen/margin_big"
+                android:background="@color/colorPrimary"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/overview"/>
+
+            <View
+                android:id="@+id/no_connection"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_huge"
+                android:layout_marginRight="@dimen/margin_huge"
+                android:background="@drawable/ic_signal_wifi_off_black_24dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/separator"/>
+
+        </android.support.constraint.ConstraintLayout>
+
+    </ScrollView>
 
 </layout>
