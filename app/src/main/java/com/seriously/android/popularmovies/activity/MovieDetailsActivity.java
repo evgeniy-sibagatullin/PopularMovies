@@ -7,6 +7,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 
 import com.seriously.android.popularmovies.R;
 import com.seriously.android.popularmovies.data.FavoritesContract.FavoriteEntry;
@@ -14,6 +17,7 @@ import com.seriously.android.popularmovies.databinding.MovieDetailsActivityBindi
 import com.seriously.android.popularmovies.loader.MovieDbLoader;
 import com.seriously.android.popularmovies.model.Movie;
 import com.seriously.android.popularmovies.utilities.ImageLoader;
+import com.seriously.android.popularmovies.utilities.NetworkUtils;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -22,6 +26,8 @@ import static com.seriously.android.popularmovies.fragment.MoviesFragment.EXTRA_
 import static com.seriously.android.popularmovies.loader.MovieDbLoader.removeFavoriteMovieIdFromCache;
 
 public class MovieDetailsActivity extends AppCompatActivity {
+
+    private static final int ANIMATION_DURATION = 500;
 
     private MovieDetailsActivityBinding mBinding;
     private Movie mMovie;
@@ -34,7 +40,21 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         handleIntent();
         initializeFavoriteViews();
+        initializeNoConnectionView();
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        String movieId = mMovie.getId();
+
+        if (mBinding.favoriteOn.getVisibility() == VISIBLE && !mMovie.isFavorite()) {
+            handleSetMovieFavorite(movieId);
+        } else if (mBinding.favoriteOff.getVisibility() == VISIBLE && mMovie.isFavorite()) {
+            handleSetMovieNotFavorite(movieId);
+        }
+    }
+
 
     private void handleIntent() {
         Intent intent = getIntent();
@@ -82,16 +102,44 @@ public class MovieDetailsActivity extends AppCompatActivity {
         view.setVisibility(visibility);
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        String movieId = mMovie.getId();
+    private void initializeNoConnectionView() {
+        handleConnection();
 
-        if (mBinding.favoriteOn.getVisibility() == VISIBLE && !mMovie.isFavorite()) {
-            handleSetMovieFavorite(movieId);
-        } else if (mBinding.favoriteOff.getVisibility() == VISIBLE && mMovie.isFavorite()) {
-            handleSetMovieNotFavorite(movieId);
+        mBinding.noConnection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                handleConnection();
+            }
+        });
+    }
+
+    private void handleConnection() {
+        if (NetworkUtils.isConnected(this)) {
+            mBinding.noConnection.setVisibility(View.GONE);
+            showReviewsLoadingAnimation();
+        } else {
+            mBinding.noConnection.setVisibility(View.VISIBLE);
+            hideReviewsLoadingAnimation();
         }
+    }
+
+    private void showReviewsLoadingAnimation() {
+        mBinding.reviewsProgressImageContainer.setVisibility(VISIBLE);
+        mBinding.reviewsProgressImage.startAnimation(prepareAnimationForProgressImage());
+    }
+
+    private void hideReviewsLoadingAnimation() {
+        mBinding.reviewsProgressImageContainer.setVisibility(GONE);
+        mBinding.reviewsProgressImage.clearAnimation();
+    }
+
+    private RotateAnimation prepareAnimationForProgressImage() {
+        RotateAnimation rotateAnimation = new RotateAnimation(0, 360,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotateAnimation.setInterpolator(new LinearInterpolator());
+        rotateAnimation.setDuration(ANIMATION_DURATION);
+        rotateAnimation.setRepeatCount(Animation.INFINITE);
+        return rotateAnimation;
     }
 
     private void handleSetMovieFavorite(String movieId) {
