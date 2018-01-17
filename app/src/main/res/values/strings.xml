@@ -8,6 +8,9 @@
     <string name="problem_http">Problem making the HTTP request</string>
     <string name="problem_json">Problem parsing the movies JSON</string>
 
+    <string name="reviews">Reviews</string>
+    <string name="trailers">Trailers</string>
+
     <!-- TODO Use your own api key here -->
     <string name="themoviedb_api_key" translatable="false">Do Androids Dream of Electric Sheep</string>
 </resources>
