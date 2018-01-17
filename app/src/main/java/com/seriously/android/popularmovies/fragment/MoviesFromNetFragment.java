@@ -8,7 +8,6 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 
-import com.seriously.android.popularmovies.R;
 import com.seriously.android.popularmovies.loader.MovieNetLoader;
 import com.seriously.android.popularmovies.model.Movie;
 import com.seriously.android.popularmovies.utilities.NetworkUtils;
@@ -18,7 +17,7 @@ import java.util.List;
 
 public abstract class MoviesFromNetFragment extends MoviesFragment {
 
-    private static final int ANIMATION_DURATION = 2000;
+    private static final int ANIMATION_DURATION = 500;
 
     @Override
     public Loader<List<Movie>> onCreateLoader(int id, Bundle args) {
@@ -38,7 +37,7 @@ public abstract class MoviesFromNetFragment extends MoviesFragment {
     protected void restartLoader() {
         if (NetworkUtils.isConnected(getActivity())) {
             handleProgressImageOnRestartNetLoader();
-            Bundle bundle = prepareBundleForLoader();
+            Bundle bundle = prepareBundleForMovieNetLoader();
             getActivity().getSupportLoaderManager().restartLoader(getLoaderId(), bundle, this);
         }
     }
@@ -58,9 +57,9 @@ public abstract class MoviesFromNetFragment extends MoviesFragment {
         return rotateAnimation;
     }
 
-    private Bundle prepareBundleForLoader() {
+    private Bundle prepareBundleForMovieNetLoader() {
         Bundle bundle = new Bundle();
-        URL queryUrl = NetworkUtils.buildUrl(getQueryType(), getString(R.string.themoviedb_api_key));
+        URL queryUrl = NetworkUtils.buildMoviesUrl(getQueryType(), getContext());
         bundle.putSerializable(QUERY_URL, queryUrl);
         return bundle;
     }

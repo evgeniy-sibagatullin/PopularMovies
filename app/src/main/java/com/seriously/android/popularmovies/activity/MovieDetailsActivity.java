@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
@@ -15,9 +18,14 @@ import com.seriously.android.popularmovies.R;
 import com.seriously.android.popularmovies.data.FavoritesContract.FavoriteEntry;
 import com.seriously.android.popularmovies.databinding.MovieDetailsActivityBinding;
 import com.seriously.android.popularmovies.loader.MovieDbLoader;
+import com.seriously.android.popularmovies.loader.ReviewLoader;
 import com.seriously.android.popularmovies.model.Movie;
+import com.seriously.android.popularmovies.model.Review;
 import com.seriously.android.popularmovies.utilities.ImageLoader;
 import com.seriously.android.popularmovies.utilities.NetworkUtils;
+
+import java.net.URL;
+import java.util.List;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -25,9 +33,12 @@ import static com.seriously.android.popularmovies.data.FavoritesContract.Favorit
 import static com.seriously.android.popularmovies.fragment.MoviesFragment.EXTRA_MOVIE;
 import static com.seriously.android.popularmovies.loader.MovieDbLoader.removeFavoriteMovieIdFromCache;
 
-public class MovieDetailsActivity extends AppCompatActivity {
+public class MovieDetailsActivity extends AppCompatActivity implements
+        LoaderManager.LoaderCallbacks<List<Review>> {
 
     private static final int ANIMATION_DURATION = 500;
+    private static final int REVIEWS_LOADER_ID = 100;
+    private static final String QUERY_URL = "query_url";
 
     private MovieDetailsActivityBinding mBinding;
     private Movie mMovie;
@@ -37,10 +48,32 @@ public class MovieDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.movie_details_activity);
-
         handleIntent();
+
         initializeFavoriteViews();
-        initializeNoConnectionView();
+        addListenerToNoConnectionView();
+        mBinding.reviewsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        updateView();
+    }
+
+    @Override
+    public Loader<List<Review>> onCreateLoader(int id, Bundle args) {
+        return new ReviewLoader(this, (URL) args.getSerializable(QUERY_URL));
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<Review>> loader, List<Review> data) {
+        hideReviewsLoadingAnimation();
+
+        mBinding.reviewsRecyclerView.setAdapter(null);
+
+        int reviewsVisibility = data.size() == 0 ? VISIBLE : GONE;
+        mBinding.noReviews.setVisibility(reviewsVisibility);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<Review>> loader) {
     }
 
     @Override
@@ -54,7 +87,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
             handleSetMovieNotFavorite(movieId);
         }
     }
-
 
     private void handleIntent() {
         Intent intent = getIntent();
@@ -102,25 +134,38 @@ public class MovieDetailsActivity extends AppCompatActivity {
         view.setVisibility(visibility);
     }
 
-    private void initializeNoConnectionView() {
-        handleConnection();
-
+    private void addListenerToNoConnectionView() {
         mBinding.noConnection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                handleConnection();
+                updateView();
             }
         });
     }
 
+    protected void updateView() {
+        handleConnection();
+        restartReviewsLoader();
+    }
+
     private void handleConnection() {
+        int visibility = NetworkUtils.isConnected(this) ? View.GONE : View.VISIBLE;
+        mBinding.noConnection.setVisibility(visibility);
+    }
+
+    private void restartReviewsLoader() {
         if (NetworkUtils.isConnected(this)) {
-            mBinding.noConnection.setVisibility(View.GONE);
             showReviewsLoadingAnimation();
-        } else {
-            mBinding.noConnection.setVisibility(View.VISIBLE);
-            hideReviewsLoadingAnimation();
+            Bundle bundle = prepareBundleForReviewsLoader();
+            getSupportLoaderManager().restartLoader(REVIEWS_LOADER_ID, bundle, this);
         }
+    }
+
+    private Bundle prepareBundleForReviewsLoader() {
+        Bundle bundle = new Bundle();
+        URL queryUrl = NetworkUtils.buildReviewsUrl(mMovie.getId(), this);
+        bundle.putSerializable(QUERY_URL, queryUrl);
+        return bundle;
     }
 
     private void showReviewsLoadingAnimation() {
