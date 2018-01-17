@@ -9,7 +9,9 @@
     <string name="problem_json">Problem parsing the movies JSON</string>
 
     <string name="reviews">Reviews</string>
+    <string name="no_reviews">Unfortunately, there is no reviews yet.</string>
     <string name="trailers">Trailers</string>
+    <string name="no_trailers">How could it be, there is no trailers?</string>
 
     <!-- TODO Use your own api key here -->
     <string name="themoviedb_api_key" translatable="false">Do Androids Dream of Electric Sheep</string>
