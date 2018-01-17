@@ -15,6 +15,7 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 
 import com.seriously.android.popularmovies.R;
+import com.seriously.android.popularmovies.adapter.ReviewAdapter;
 import com.seriously.android.popularmovies.data.FavoritesContract.FavoriteEntry;
 import com.seriously.android.popularmovies.databinding.MovieDetailsActivityBinding;
 import com.seriously.android.popularmovies.loader.MovieDbLoader;
@@ -34,7 +35,7 @@ import static com.seriously.android.popularmovies.fragment.MoviesFragment.EXTRA_
 import static com.seriously.android.popularmovies.loader.MovieDbLoader.removeFavoriteMovieIdFromCache;
 
 public class MovieDetailsActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<List<Review>> {
+        LoaderManager.LoaderCallbacks<List<Review>>, ReviewAdapter.ReviewClickListener {
 
     private static final int ANIMATION_DURATION = 500;
     private static final int REVIEWS_LOADER_ID = 100;
@@ -65,11 +66,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements
     @Override
     public void onLoadFinished(Loader<List<Review>> loader, List<Review> data) {
         hideReviewsLoadingAnimation();
-
-        mBinding.reviewsRecyclerView.setAdapter(null);
-
-        int reviewsVisibility = data.size() == 0 ? VISIBLE : GONE;
-        mBinding.noReviews.setVisibility(reviewsVisibility);
+        mBinding.reviewsRecyclerView.setAdapter(new ReviewAdapter(this, this, data));
+        handleNoReviewsDisplay(data.size());
     }
 
     @Override
@@ -86,6 +84,12 @@ public class MovieDetailsActivity extends AppCompatActivity implements
         } else if (mBinding.favoriteOff.getVisibility() == VISIBLE && mMovie.isFavorite()) {
             handleSetMovieNotFavorite(movieId);
         }
+    }
+
+    @Override
+    public void openReview(String url) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(browserIntent);
     }
 
     private void handleIntent() {
@@ -143,7 +147,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements
         });
     }
 
-    protected void updateView() {
+    private void updateView() {
         handleConnection();
         restartReviewsLoader();
     }
@@ -176,6 +180,11 @@ public class MovieDetailsActivity extends AppCompatActivity implements
     private void hideReviewsLoadingAnimation() {
         mBinding.reviewsProgressImageContainer.setVisibility(GONE);
         mBinding.reviewsProgressImage.clearAnimation();
+    }
+
+    private void handleNoReviewsDisplay(int reviewsCount) {
+        int reviewsVisibility = reviewsCount == 0 ? VISIBLE : GONE;
+        mBinding.noReviews.setVisibility(reviewsVisibility);
     }
 
     private RotateAnimation prepareAnimationForProgressImage() {
