@@ -10,6 +10,7 @@ import android.util.Log;
 import com.seriously.android.popularmovies.R;
 import com.seriously.android.popularmovies.model.Movie;
 import com.seriously.android.popularmovies.model.Review;
+import com.seriously.android.popularmovies.model.Trailer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,8 +35,10 @@ public class NetworkUtils {
     private static final String API_BASE_URL = "https://api.themoviedb.org/3/movie/";
     private static final String API_KEY = "api_key";
     private static final String API_REVIEWS_ENDPOINT = "%s/reviews";
+    private static final String API_TRAILERS_ENDPOINT = "%s/trailers";
 
     private static final String JSON_RESULTS = "results";
+    private static final String JSON_YOUTUBE = "youtube";
 
     public static boolean isConnected(Context context) {
         NetworkInfo activeNetworkInfo = getActiveNetworkInfo(context);
@@ -57,6 +60,10 @@ public class NetworkUtils {
         return buildUrl(API_BASE_URL + String.format(API_REVIEWS_ENDPOINT, movieId), context);
     }
 
+    public static URL buildTrailersUrl(String movieId, Context context) {
+        return buildUrl(API_BASE_URL + String.format(API_TRAILERS_ENDPOINT, movieId), context);
+    }
+
     public static List<Movie> getMoviesByUrl(URL url, Context context) {
         String jsonString = getJsonStringFromUrl(url, context);
         return extractMoviesFromJson(jsonString, context);
@@ -65,6 +72,11 @@ public class NetworkUtils {
     public static List<Review> getReviewsByUrl(URL url, Context context) {
         String jsonString = getJsonStringFromUrl(url, context);
         return extractReviewsFromJson(jsonString, context);
+    }
+
+    public static List<Trailer> getTrailersByUrl(URL url, Context context) {
+        String jsonString = getJsonStringFromUrl(url, context);
+        return extractTrailersFromJson(jsonString, context);
     }
 
     private static URL buildUrl(String uriString, Context context) {
@@ -138,5 +150,23 @@ public class NetworkUtils {
         }
 
         return reviews;
+    }
+
+    private static List<Trailer> extractTrailersFromJson(String trailersJson, Context context) {
+        List<Trailer> trailers = new ArrayList<>();
+
+        if (trailersJson != null) {
+            try {
+                JSONArray reviewsArray = new JSONObject(trailersJson).getJSONArray(JSON_YOUTUBE);
+
+                for (int index = 0; index < reviewsArray.length(); index++) {
+                    trailers.add(Trailer.getInstance(reviewsArray.getJSONObject(index)));
+                }
+            } catch (JSONException e) {
+                Log.e(LOG_TAG, context.getString(R.string.problem_json), e);
+            }
+        }
+
+        return trailers;
     }
 }

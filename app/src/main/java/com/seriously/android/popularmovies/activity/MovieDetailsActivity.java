@@ -20,8 +20,10 @@ import com.seriously.android.popularmovies.data.FavoritesContract.FavoriteEntry;
 import com.seriously.android.popularmovies.databinding.MovieDetailsActivityBinding;
 import com.seriously.android.popularmovies.loader.MovieDbLoader;
 import com.seriously.android.popularmovies.loader.ReviewLoader;
+import com.seriously.android.popularmovies.loader.TrailerLoader;
 import com.seriously.android.popularmovies.model.Movie;
 import com.seriously.android.popularmovies.model.Review;
+import com.seriously.android.popularmovies.model.Trailer;
 import com.seriously.android.popularmovies.utilities.ImageLoader;
 import com.seriously.android.popularmovies.utilities.NetworkUtils;
 
@@ -35,14 +37,56 @@ import static com.seriously.android.popularmovies.fragment.MoviesFragment.EXTRA_
 import static com.seriously.android.popularmovies.loader.MovieDbLoader.removeFavoriteMovieIdFromCache;
 
 public class MovieDetailsActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<List<Review>>, ReviewAdapter.ReviewClickListener {
+        ReviewAdapter.ReviewClickListener {
 
     private static final int ANIMATION_DURATION = 500;
     private static final int REVIEWS_LOADER_ID = 100;
+    private static final int TRAILERS_LOADER_ID = 200;
     private static final String QUERY_URL = "query_url";
 
     private MovieDetailsActivityBinding mBinding;
     private Movie mMovie;
+
+    private LoaderManager.LoaderCallbacks<List<Review>> reviewsLoaderCallbacks =
+            new LoaderManager.LoaderCallbacks<List<Review>>() {
+                @Override
+                public Loader<List<Review>> onCreateLoader(int id, Bundle args) {
+                    return new ReviewLoader(MovieDetailsActivity.this,
+                            (URL) args.getSerializable(QUERY_URL));
+                }
+
+                @Override
+                public void onLoadFinished(Loader<List<Review>> loader, List<Review> data) {
+                    hideReviewsLoadingAnimation();
+                    mBinding.reviewsRecyclerView.setAdapter(new ReviewAdapter(
+                            MovieDetailsActivity.this, MovieDetailsActivity.this, data));
+                    handleNoReviewsDisplay(data.size());
+                }
+
+                @Override
+                public void onLoaderReset(Loader<List<Review>> loader) {
+                }
+            };
+
+    private LoaderManager.LoaderCallbacks<List<Trailer>> trailersLoaderCallbacks =
+            new LoaderManager.LoaderCallbacks<List<Trailer>>() {
+                @Override
+                public Loader<List<Trailer>> onCreateLoader(int id, Bundle args) {
+                    return new TrailerLoader(MovieDetailsActivity.this,
+                            (URL) args.getSerializable(QUERY_URL));
+                }
+
+                @Override
+                public void onLoadFinished(Loader<List<Trailer>> loader, List<Trailer> data) {
+                    hideTrailersLoadingAnimation();
+                    mBinding.reviewsRecyclerView.setAdapter(null);
+                    handleNoTrailersDisplay(data.size());
+                }
+
+                @Override
+                public void onLoaderReset(Loader<List<Trailer>> loader) {
+                }
+            };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,24 +98,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements
         initializeFavoriteViews();
         addListenerToNoConnectionView();
         mBinding.reviewsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mBinding.trailersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         updateView();
-    }
-
-    @Override
-    public Loader<List<Review>> onCreateLoader(int id, Bundle args) {
-        return new ReviewLoader(this, (URL) args.getSerializable(QUERY_URL));
-    }
-
-    @Override
-    public void onLoadFinished(Loader<List<Review>> loader, List<Review> data) {
-        hideReviewsLoadingAnimation();
-        mBinding.reviewsRecyclerView.setAdapter(new ReviewAdapter(this, this, data));
-        handleNoReviewsDisplay(data.size());
-    }
-
-    @Override
-    public void onLoaderReset(Loader<List<Review>> loader) {
     }
 
     @Override
@@ -150,6 +179,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements
     private void updateView() {
         handleConnection();
         restartReviewsLoader();
+        restartTrailersLoader();
     }
 
     private void handleConnection() {
@@ -161,7 +191,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements
         if (NetworkUtils.isConnected(this)) {
             showReviewsLoadingAnimation();
             Bundle bundle = prepareBundleForReviewsLoader();
-            getSupportLoaderManager().restartLoader(REVIEWS_LOADER_ID, bundle, this);
+            getSupportLoaderManager().restartLoader(REVIEWS_LOADER_ID, bundle, reviewsLoaderCallbacks);
         }
     }
 
@@ -185,6 +215,36 @@ public class MovieDetailsActivity extends AppCompatActivity implements
     private void handleNoReviewsDisplay(int reviewsCount) {
         int reviewsVisibility = reviewsCount == 0 ? VISIBLE : GONE;
         mBinding.noReviews.setVisibility(reviewsVisibility);
+    }
+
+    private void restartTrailersLoader() {
+        if (NetworkUtils.isConnected(this)) {
+            showTrailersLoadingAnimation();
+            Bundle bundle = prepareBundleForTrailersLoader();
+            getSupportLoaderManager().restartLoader(TRAILERS_LOADER_ID, bundle, trailersLoaderCallbacks);
+        }
+    }
+
+    private Bundle prepareBundleForTrailersLoader() {
+        Bundle bundle = new Bundle();
+        URL queryUrl = NetworkUtils.buildTrailersUrl(mMovie.getId(), this);
+        bundle.putSerializable(QUERY_URL, queryUrl);
+        return bundle;
+    }
+
+    private void showTrailersLoadingAnimation() {
+        mBinding.trailersProgressImageContainer.setVisibility(VISIBLE);
+        mBinding.trailersProgressImage.startAnimation(prepareAnimationForProgressImage());
+    }
+
+    private void hideTrailersLoadingAnimation() {
+        mBinding.trailersProgressImageContainer.setVisibility(GONE);
+        mBinding.trailersProgressImage.clearAnimation();
+    }
+
+    private void handleNoTrailersDisplay(int trailersCount) {
+        int trailersVisibility = trailersCount == 0 ? VISIBLE : GONE;
+        mBinding.noTrailers.setVisibility(trailersVisibility);
     }
 
     private RotateAnimation prepareAnimationForProgressImage() {
