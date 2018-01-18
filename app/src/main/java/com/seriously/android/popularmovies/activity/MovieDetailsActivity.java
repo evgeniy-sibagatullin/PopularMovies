@@ -16,6 +16,7 @@ import android.view.animation.RotateAnimation;
 
 import com.seriously.android.popularmovies.R;
 import com.seriously.android.popularmovies.adapter.ReviewAdapter;
+import com.seriously.android.popularmovies.adapter.TrailerAdapter;
 import com.seriously.android.popularmovies.data.FavoritesContract.FavoriteEntry;
 import com.seriously.android.popularmovies.databinding.MovieDetailsActivityBinding;
 import com.seriously.android.popularmovies.loader.MovieDbLoader;
@@ -37,12 +38,13 @@ import static com.seriously.android.popularmovies.fragment.MoviesFragment.EXTRA_
 import static com.seriously.android.popularmovies.loader.MovieDbLoader.removeFavoriteMovieIdFromCache;
 
 public class MovieDetailsActivity extends AppCompatActivity implements
-        ReviewAdapter.ReviewClickListener {
+        ReviewAdapter.ReviewClickListener, TrailerAdapter.TrailerClickListener {
 
     private static final int ANIMATION_DURATION = 500;
     private static final int REVIEWS_LOADER_ID = 100;
     private static final int TRAILERS_LOADER_ID = 200;
     private static final String QUERY_URL = "query_url";
+    private static final String YOUTUBE_BASE_URL = "http://www.youtube.com/watch?v=%s";
 
     private MovieDetailsActivityBinding mBinding;
     private Movie mMovie;
@@ -79,7 +81,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements
                 @Override
                 public void onLoadFinished(Loader<List<Trailer>> loader, List<Trailer> data) {
                     hideTrailersLoadingAnimation();
-                    mBinding.reviewsRecyclerView.setAdapter(null);
+                    mBinding.trailersRecyclerView.setAdapter(new TrailerAdapter(
+                            MovieDetailsActivity.this, MovieDetailsActivity.this, data));
                     handleNoTrailersDisplay(data.size());
                 }
 
@@ -119,6 +122,13 @@ public class MovieDetailsActivity extends AppCompatActivity implements
     public void openReview(String url) {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         startActivity(browserIntent);
+    }
+
+    @Override
+    public void playTrailer(String source) {
+        Uri trailerUri = Uri.parse(String.format(YOUTUBE_BASE_URL, source));
+        Intent youtubeIntent = new Intent(Intent.ACTION_VIEW, trailerUri);
+        startActivity(youtubeIntent);
     }
 
     private void handleIntent() {

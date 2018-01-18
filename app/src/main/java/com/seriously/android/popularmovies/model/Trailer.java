@@ -26,7 +26,7 @@ public class Trailer {
         return name;
     }
 
-    public String getContent() {
+    public String getSource() {
         return source;
     }
 
