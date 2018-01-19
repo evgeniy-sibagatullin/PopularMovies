@@ -14,7 +14,9 @@ import java.util.List;
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerViewHolder> {
 
     public interface TrailerClickListener {
-        void playTrailer(String source);
+        void playTrailer(String trailerUrl);
+
+        void shareTrailerUrl(String trailerUrl);
     }
 
     private final Context mContext;
@@ -33,12 +35,22 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
         void bind(Trailer trailer) {
             mBinding.name.setText(trailer.getName());
             mBinding.getRoot().setOnClickListener(this);
+            mBinding.shareUrl.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mListener.shareTrailerUrl(getClickedTrailerSource());
+                }
+            });
         }
 
         @Override
         public void onClick(View view) {
+            mListener.playTrailer(getClickedTrailerSource());
+        }
+
+        private String getClickedTrailerSource() {
             int clickedPosition = getAdapterPosition();
-            mListener.playTrailer(mTrailers.get(clickedPosition).getSource());
+            return mTrailers.get(clickedPosition).getSource();
         }
     }
 

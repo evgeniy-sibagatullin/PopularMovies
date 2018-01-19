@@ -125,10 +125,19 @@ public class MovieDetailsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void playTrailer(String source) {
-        Uri trailerUri = Uri.parse(String.format(YOUTUBE_BASE_URL, source));
+    public void playTrailer(String trailerSource) {
+        Uri trailerUri = Uri.parse(String.format(YOUTUBE_BASE_URL, trailerSource));
         Intent youtubeIntent = new Intent(Intent.ACTION_VIEW, trailerUri);
         startActivity(youtubeIntent);
+    }
+
+    @Override
+    public void shareTrailerUrl(String trailerSource) {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        Uri trailerUri = Uri.parse(String.format(YOUTUBE_BASE_URL, trailerSource));
+        shareIntent.putExtra(Intent.EXTRA_TEXT, trailerUri.toString());
+        shareIntent.setType("text/plain");
+        startActivity(Intent.createChooser(shareIntent, getString(R.string.share_trailer)));
     }
 
     private void handleIntent() {
