@@ -144,7 +144,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements
         Intent intent = getIntent();
 
         if (intent.hasExtra(EXTRA_MOVIE)) {
-            mMovie = (Movie) intent.getSerializableExtra(EXTRA_MOVIE);
+            mMovie = intent.getParcelableExtra(EXTRA_MOVIE);
             fillViewsByMovieData();
         } else {
             this.finish();

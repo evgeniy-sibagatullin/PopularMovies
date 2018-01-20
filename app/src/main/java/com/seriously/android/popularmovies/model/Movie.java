@@ -1,13 +1,13 @@
 package com.seriously.android.popularmovies.model;
 
 import android.database.Cursor;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.seriously.android.popularmovies.loader.MovieDbLoader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.Serializable;
 
 import static com.seriously.android.popularmovies.data.FavoritesContract.FavoriteEntry.COLUMN_FAVORITE_ID;
 import static com.seriously.android.popularmovies.data.FavoritesContract.FavoriteEntry.COLUMN_FAVORITE_OVERVIEW;
@@ -16,7 +16,7 @@ import static com.seriously.android.popularmovies.data.FavoritesContract.Favorit
 import static com.seriously.android.popularmovies.data.FavoritesContract.FavoriteEntry.COLUMN_FAVORITE_TITLE;
 import static com.seriously.android.popularmovies.data.FavoritesContract.FavoriteEntry.COLUMN_FAVORITE_VOTE_AVERAGE;
 
-public class Movie implements Serializable {
+public class Movie implements Parcelable {
 
     private static final String JSON_ID = "id";
     private static final String JSON_TITLE = "title";
@@ -31,6 +31,27 @@ public class Movie implements Serializable {
     private final String posterPath;
     private final String voteAverage;
     private final String overview;
+
+    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
+
+    protected Movie(Parcel in) {
+        id = in.readString();
+        title = in.readString();
+        releaseDate = in.readString();
+        posterPath = in.readString();
+        voteAverage = in.readString();
+        overview = in.readString();
+    }
 
     private Movie(String id, String title, String releaseDate, String posterPath, String voteAverage, String overview) {
         this.id = id;
@@ -139,5 +160,20 @@ public class Movie implements Serializable {
                 ", voteAverage=" + getVoteAverage() +
                 ", overview='" + getOverview() + '\'' +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeString(title);
+        parcel.writeString(releaseDate);
+        parcel.writeString(posterPath);
+        parcel.writeString(voteAverage);
+        parcel.writeString(overview);
     }
 }
