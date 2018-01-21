@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/bonus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/trailers_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_big"
+            android:text="@string/trailers"
+            android:textSize="@dimen/font_size_title"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <FrameLayout
+            android:id="@+id/trailers_progress_image_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_default"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/trailers_title">
+
+            <ImageView
+                android:id="@+id/trailers_progress_image"
+                android:layout_width="@dimen/progress_image_size"
+                android:layout_height="@dimen/progress_image_size"
+                android:layout_gravity="center"
+                android:src="@drawable/progress_image"/>
+
+        </FrameLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/trailers_recycler_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_default"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/trailers_title"/>
+
+        <TextView
+            android:id="@+id/no_trailers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_big"
+            android:paddingBottom="@dimen/margin_big"
+            android:text="@string/no_trailers"
+            android:textSize="@dimen/font_size_default"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/trailers_recycler_view"/>
+
+        <TextView
+            android:id="@+id/reviews_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_big"
+            android:layout_marginTop="@dimen/margin_default"
+            android:text="@string/reviews"
+            android:textSize="@dimen/font_size_title"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/no_trailers"/>
+
+        <FrameLayout
+            android:id="@+id/reviews_progress_image_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_default"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/reviews_title">
+
+            <ImageView
+                android:id="@+id/reviews_progress_image"
+                android:layout_width="@dimen/progress_image_size"
+                android:layout_height="@dimen/progress_image_size"
+                android:layout_gravity="center"
+                android:src="@drawable/progress_image"/>
+
+        </FrameLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/reviews_recycler_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_default"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/reviews_title"/>
+
+        <TextView
+            android:id="@+id/no_reviews"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_big"
+            android:text="@string/no_reviews"
+            android:textSize="@dimen/font_size_default"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/reviews_recycler_view"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</layout>

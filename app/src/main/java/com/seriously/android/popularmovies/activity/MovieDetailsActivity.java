@@ -60,7 +60,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements
                 @Override
                 public void onLoadFinished(Loader<List<Review>> loader, List<Review> data) {
                     hideReviewsLoadingAnimation();
-                    mBinding.reviewsRecyclerView.setAdapter(new ReviewAdapter(
+                    mBinding.reviewsAndTrailers.reviewsRecyclerView.setAdapter(new ReviewAdapter(
                             MovieDetailsActivity.this, MovieDetailsActivity.this, data));
                     handleNoReviewsDisplay(data.size());
                 }
@@ -81,7 +81,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements
                 @Override
                 public void onLoadFinished(Loader<List<Trailer>> loader, List<Trailer> data) {
                     hideTrailersLoadingAnimation();
-                    mBinding.trailersRecyclerView.setAdapter(new TrailerAdapter(
+                    mBinding.reviewsAndTrailers.trailersRecyclerView.setAdapter(new TrailerAdapter(
                             MovieDetailsActivity.this, MovieDetailsActivity.this, data));
                     handleNoTrailersDisplay(data.size());
                 }
@@ -100,8 +100,10 @@ public class MovieDetailsActivity extends AppCompatActivity implements
 
         initializeFavoriteViews();
         addListenerToNoConnectionView();
-        mBinding.reviewsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mBinding.trailersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mBinding.reviewsAndTrailers.reviewsRecyclerView.setLayoutManager(
+                new LinearLayoutManager(this));
+        mBinding.reviewsAndTrailers.trailersRecyclerView.setLayoutManager(
+                new LinearLayoutManager(this));
 
         updateView();
     }
@@ -210,7 +212,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements
         if (NetworkUtils.isConnected(this)) {
             showReviewsLoadingAnimation();
             Bundle bundle = prepareBundleForReviewsLoader();
-            getSupportLoaderManager().restartLoader(REVIEWS_LOADER_ID, bundle, reviewsLoaderCallbacks);
+            getSupportLoaderManager().restartLoader(REVIEWS_LOADER_ID, bundle,
+                    reviewsLoaderCallbacks);
         }
     }
 
@@ -222,25 +225,27 @@ public class MovieDetailsActivity extends AppCompatActivity implements
     }
 
     private void showReviewsLoadingAnimation() {
-        mBinding.reviewsProgressImageContainer.setVisibility(VISIBLE);
-        mBinding.reviewsProgressImage.startAnimation(prepareAnimationForProgressImage());
+        mBinding.reviewsAndTrailers.reviewsProgressImageContainer.setVisibility(VISIBLE);
+        mBinding.reviewsAndTrailers.reviewsProgressImage.startAnimation(
+                prepareAnimationForProgressImage());
     }
 
     private void hideReviewsLoadingAnimation() {
-        mBinding.reviewsProgressImageContainer.setVisibility(GONE);
-        mBinding.reviewsProgressImage.clearAnimation();
+        mBinding.reviewsAndTrailers.reviewsProgressImageContainer.setVisibility(GONE);
+        mBinding.reviewsAndTrailers.reviewsProgressImage.clearAnimation();
     }
 
     private void handleNoReviewsDisplay(int reviewsCount) {
         int reviewsVisibility = reviewsCount == 0 ? VISIBLE : GONE;
-        mBinding.noReviews.setVisibility(reviewsVisibility);
+        mBinding.reviewsAndTrailers.noReviews.setVisibility(reviewsVisibility);
     }
 
     private void restartTrailersLoader() {
         if (NetworkUtils.isConnected(this)) {
             showTrailersLoadingAnimation();
             Bundle bundle = prepareBundleForTrailersLoader();
-            getSupportLoaderManager().restartLoader(TRAILERS_LOADER_ID, bundle, trailersLoaderCallbacks);
+            getSupportLoaderManager().restartLoader(TRAILERS_LOADER_ID, bundle,
+                    trailersLoaderCallbacks);
         }
     }
 
@@ -252,18 +257,19 @@ public class MovieDetailsActivity extends AppCompatActivity implements
     }
 
     private void showTrailersLoadingAnimation() {
-        mBinding.trailersProgressImageContainer.setVisibility(VISIBLE);
-        mBinding.trailersProgressImage.startAnimation(prepareAnimationForProgressImage());
+        mBinding.reviewsAndTrailers.trailersProgressImageContainer.setVisibility(VISIBLE);
+        mBinding.reviewsAndTrailers.trailersProgressImage.startAnimation(
+                prepareAnimationForProgressImage());
     }
 
     private void hideTrailersLoadingAnimation() {
-        mBinding.trailersProgressImageContainer.setVisibility(GONE);
-        mBinding.trailersProgressImage.clearAnimation();
+        mBinding.reviewsAndTrailers.trailersProgressImageContainer.setVisibility(GONE);
+        mBinding.reviewsAndTrailers.trailersProgressImage.clearAnimation();
     }
 
     private void handleNoTrailersDisplay(int trailersCount) {
         int trailersVisibility = trailersCount == 0 ? VISIBLE : GONE;
-        mBinding.noTrailers.setVisibility(trailersVisibility);
+        mBinding.reviewsAndTrailers.noTrailers.setVisibility(trailersVisibility);
     }
 
     private RotateAnimation prepareAnimationForProgressImage() {

@@ -1,6 +1,7 @@
 package com.seriously.android.popularmovies.fragment;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -27,7 +28,8 @@ public abstract class MoviesFragment extends Fragment implements
 
     public static final String EXTRA_MOVIE = "intent.extra.MOVIE";
     protected static final String QUERY_URL = "query_url";
-    private static final int GRID_COLUMNS = 2;
+    private static final int GRID_COLUMNS_PORTRAIT = 2;
+    private static final int GRID_COLUMNS_LANDSCAPE = 3;
 
     protected View mNoConnection;
     protected View mProgressImageContainer;
@@ -78,8 +80,14 @@ public abstract class MoviesFragment extends Fragment implements
         mProgressImage = mBinding.progressImage;
 
         mRecyclerView = mBinding.movieGrid;
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), GRID_COLUMNS));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), getGridSpanCount()));
         mRecyclerView.setHasFixedSize(true);
+    }
+
+    private int getGridSpanCount() {
+        int currentOrientation = getResources().getConfiguration().orientation;
+        return currentOrientation == Configuration.ORIENTATION_LANDSCAPE ?
+                GRID_COLUMNS_LANDSCAPE : GRID_COLUMNS_PORTRAIT;
     }
 
     protected void updateView() {
