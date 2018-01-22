@@ -32,10 +32,13 @@ public class NetworkUtils {
 
     private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
 
-    private static final String API_BASE_URL = "https://api.themoviedb.org/3/movie/";
+    private static final String SCHEME = "https";
+    private static final String AUTHORITY = "api.themoviedb.org";
+    private static final String API_BASE_URL_PART_1 = "3";
+    private static final String API_BASE_URL_PART_2 = "movie";
     private static final String API_KEY = "api_key";
-    private static final String API_REVIEWS_ENDPOINT = "%s/reviews";
-    private static final String API_TRAILERS_ENDPOINT = "%s/trailers";
+    private static final String API_REVIEWS_ENDPOINT = "reviews";
+    private static final String API_TRAILERS_ENDPOINT = "trailers";
 
     private static final String JSON_RESULTS = "results";
     private static final String JSON_YOUTUBE = "youtube";
@@ -53,15 +56,41 @@ public class NetworkUtils {
     }
 
     public static URL buildMoviesUrl(String queryType, Context context) {
-        return buildUrl(API_BASE_URL + queryType, context);
+        return buildUrl(queryType, null, context);
     }
 
     public static URL buildReviewsUrl(String movieId, Context context) {
-        return buildUrl(API_BASE_URL + String.format(API_REVIEWS_ENDPOINT, movieId), context);
+        return buildUrl(API_REVIEWS_ENDPOINT, movieId, context);
     }
 
     public static URL buildTrailersUrl(String movieId, Context context) {
-        return buildUrl(API_BASE_URL + String.format(API_TRAILERS_ENDPOINT, movieId), context);
+        return buildUrl(API_TRAILERS_ENDPOINT, movieId, context);
+    }
+
+    private static URL buildUrl(String endpoint, String movieId, Context context) {
+        Uri.Builder builder = new Uri.Builder()
+                .scheme(SCHEME)
+                .authority(AUTHORITY)
+                .appendPath(API_BASE_URL_PART_1)
+                .appendPath(API_BASE_URL_PART_2);
+
+        if (movieId != null) {
+            builder.appendPath(movieId);
+        }
+
+        Uri builtUri = builder
+                .appendPath(endpoint)
+                .appendQueryParameter(API_KEY, context.getString(R.string.themoviedb_api_key))
+                .build();
+        URL url = null;
+
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
     }
 
     public static List<Movie> getMoviesByUrl(URL url, Context context) {
@@ -77,20 +106,6 @@ public class NetworkUtils {
     public static List<Trailer> getTrailersByUrl(URL url, Context context) {
         String jsonString = getJsonStringFromUrl(url, context);
         return extractTrailersFromJson(jsonString, context);
-    }
-
-    private static URL buildUrl(String uriString, Context context) {
-        String apiKey = context.getString(R.string.themoviedb_api_key);
-        Uri builtUri = Uri.parse(uriString).buildUpon().appendQueryParameter(API_KEY, apiKey).build();
-        URL url = null;
-
-        try {
-            url = new URL(builtUri.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        return url;
     }
 
     @Nullable
